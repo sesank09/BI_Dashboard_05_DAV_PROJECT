@@ -1,10 +1,13 @@
-# Python
+# Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
 *$py.class
+
+# C extensions
 *.so
+
+# Distribution / packaging
 .Python
-env/
 build/
 develop-eggs/
 dist/
@@ -17,32 +20,37 @@ parts/
 sdist/
 var/
 wheels/
+share/python-wheels/
 *.egg-info/
 .installed.cfg
 *.egg
 
-# Virtual Environment
+# Virtual environments
 venv/
+env/
 ENV/
-env.bak/
-venv.bak/
+.venv/
 
-# Environment variables & secrets
+# Node.js
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+frontend/node_modules/
+frontend/dist/
+
+# Local databases & logs
+*.db
+*.sqlite3
+bi_warehouse.db
+*.log
+
+# Environment variables
 .env
 .env.local
-*.pem
-*.key
-*.secret
 
-# IDEs and Editors
+# IDE & OS
 .vscode/
 .idea/
-*.swp
-*.swo
-
-# Temporary Office / OS Files
-~$*.docx
-~$*.pptx
-~$*.xlsx
 .DS_Store
 Thumbs.db

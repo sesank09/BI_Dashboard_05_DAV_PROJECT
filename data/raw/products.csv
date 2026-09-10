@@ -1,0 +1,30 @@
+product_id,product_name,category,unit_cost,selling_price
+PROD-101,Enterprise Cloud Suite,Cloud Infrastructure,1200.0,2500.0
+PROD-102,Data Analytics Platform,Enterprise Software,800.0,1800.0
+PROD-103,AI Model Hosting,Cloud Infrastructure,500.0,1200.0
+PROD-104,High-Perf Server Rack,Hardware Workstations,3500.0,6000.0
+PROD-105,Developer Workstation,Hardware Workstations,1200.0,2200.0
+PROD-106,Security Shield SaaS,SaaS Subscriptions,150.0,450.0
+PROD-107,CRM Enterprise Edition,SaaS Subscriptions,300.0,850.0
+PROD-108,ERP Integration Pack,Enterprise Software,2000.0,4500.0
+PROD-109,BI Implementation Package,Consulting Services,1500.0,3500.0
+PROD-110,DevOps Consulting Retainer,Consulting Services,2500.0,5000.0
+PROD-111,Edge Compute Node,Cloud Infrastructure,700.0,1400.0
+PROD-112,Cybersecurity Audit Tool,Enterprise Software,900.0,2100.0
+PROD-113,Cloud Infrastructure Module #13,Cloud Infrastructure,270.03,459.73
+PROD-114,Enterprise Software Module #14,Enterprise Software,590.71,893.59
+PROD-115,Consulting Services Module #15,Consulting Services,443.43,826.6
+PROD-116,Cloud Infrastructure Module #16,Cloud Infrastructure,462.35,765.62
+PROD-117,Consulting Services Module #17,Consulting Services,274.3,444.02
+PROD-118,Consulting Services Module #18,Consulting Services,1374.66,2603.78
+PROD-119,Hardware Workstations Module #19,Hardware Workstations,2466.41,3470.61
+PROD-120,Enterprise Software Module #20,Enterprise Software,2154.79,3823.19
+PROD-121,Enterprise Software Module #21,Enterprise Software,802.88,1798.33
+PROD-122,Cloud Infrastructure Module #22,Cloud Infrastructure,459.69,692.47
+PROD-123,Hardware Workstations Module #23,Hardware Workstations,1890.43,4325.0
+PROD-124,SaaS Subscriptions Module #24,SaaS Subscriptions,1701.44,4203.28
+PROD-125,SaaS Subscriptions Module #25,SaaS Subscriptions,420.64,724.55
+PROD-126,Consulting Services Module #26,Consulting Services,2679.26,4816.77
+PROD-127,Enterprise Software Module #27,Enterprise Software,2172.8,3151.44
+PROD-128,Enterprise Software Module #28,Enterprise Software,2364.59,5873.04
+PROD-129,Enterprise Software Module #29,Enterprise Software,2626.15,4774.71
