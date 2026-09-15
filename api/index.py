@@ -1,7 +1,6 @@
 import os
 import sys
 import shutil
-import traceback
 
 current_dir = os.path.dirname(os.path.abspath(__file__))
 root_dir = os.path.abspath(os.path.join(current_dir, ".."))
@@ -31,15 +30,6 @@ try:
 except Exception as err:
     print(f"[Vercel Handler] Note on db pre-seed: {err}")
 
-try:
-    from app.main import app
-except Exception as e:
-    err_msg = str(e)
-    err_tb = traceback.format_exc()
-    print(f"[CRITICAL STARTUP ERROR] {err_msg}\n{err_tb}")
-    from fastapi import FastAPI
-    from fastapi.responses import JSONResponse
-    app = FastAPI()
-    @app.api_route("/{path:path}", methods=["GET", "POST", "PUT", "DELETE", "OPTIONS"])
-    def fallback_handler(path: str):
-        return JSONResponse(status_code=500, content={"error": err_msg, "traceback": err_tb})
+from app.main import app
+
+handler = app
