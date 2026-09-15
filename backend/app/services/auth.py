@@ -5,22 +5,30 @@ from jose import JWTError, jwt
 from app.config import settings
 
 # Password hashing configuration
-pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
+try:
+    pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
+except Exception:
+    pwd_context = None
 
 def verify_password(plain_password: str, hashed_password: str) -> bool:
-    try:
-        return pwd_context.verify(plain_password, hashed_password)
-    except Exception:
-        # Fallback simple verification if passlib bcrypt has version incompatibility
-        import hashlib
-        return hashlib.sha256(plain_password.encode()).hexdigest() == hashed_password
+    if pwd_context:
+        try:
+            return pwd_context.verify(plain_password, hashed_password)
+        except Exception:
+            pass
+    # Fallback SHA256 verification if bcrypt/passlib has version incompatibility
+    import hashlib
+    return hashlib.sha256(plain_password.encode()).hexdigest() == hashed_password
 
 def get_password_hash(password: str) -> str:
-    try:
-        return pwd_context.hash(password)
-    except Exception:
-        import hashlib
-        return hashlib.sha256(password.encode()).hexdigest()
+    if pwd_context:
+        try:
+            return pwd_context.hash(password)
+        except Exception:
+            pass
+    import hashlib
+    return hashlib.sha256(password.encode()).hexdigest()
+
 
 def create_access_token(data: dict, expires_delta: Optional[datetime.timedelta] = None) -> str:
     to_encode = data.copy()

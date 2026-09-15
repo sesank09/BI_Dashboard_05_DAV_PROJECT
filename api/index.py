@@ -1,8 +1,8 @@
 import os
 import sys
 import shutil
+import traceback
 
-# Ensure current directory, backend, and project root are in Python path
 current_dir = os.path.dirname(os.path.abspath(__file__))
 root_dir = os.path.abspath(os.path.join(current_dir, ".."))
 backend_dir = os.path.abspath(os.path.join(root_dir, "backend"))
@@ -21,6 +21,7 @@ try:
             os.path.join(backend_dir, "bi_warehouse.db"),
             "/var/task/api/bi_warehouse.db",
             "/var/task/bi_warehouse.db",
+            "/var/task/backend/bi_warehouse.db"
         ]
         for candidate in candidates:
             if os.path.exists(candidate) and os.path.getsize(candidate) > 100000:
@@ -30,4 +31,15 @@ try:
 except Exception as err:
     print(f"[Vercel Handler] Note on db pre-seed: {err}")
 
-from app.main import app
+try:
+    from app.main import app
+except Exception as e:
+    err_msg = str(e)
+    err_tb = traceback.format_exc()
+    print(f"[CRITICAL STARTUP ERROR] {err_msg}\n{err_tb}")
+    from fastapi import FastAPI
+    from fastapi.responses import JSONResponse
+    app = FastAPI()
+    @app.api_route("/{path:path}", methods=["GET", "POST", "PUT", "DELETE", "OPTIONS"])
+    def fallback_handler(path: str):
+        return JSONResponse(status_code=500, content={"error": err_msg, "traceback": err_tb})
