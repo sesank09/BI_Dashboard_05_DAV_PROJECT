@@ -21,18 +21,19 @@ app.add_middleware(
 
 @app.on_event("startup")
 def startup_event():
-    # Auto-seed database if empty or running on Vercel
     try:
         from app.database.connection import SessionLocal, engine
-        from app.database.schema import Base, User
+        from app.database.schema import Base, User, FactSales
         from app.services.auth import get_password_hash
-        from app.services.etl_engine import ETLEngine
 
         Base.metadata.create_all(bind=engine)
         db = SessionLocal()
         user_count = db.query(User).count()
+        sales_count = db.query(FactSales).count()
+        print(f"[Startup] Database status: {user_count} users, {sales_count} sales records present.")
+
         if user_count == 0:
-            print("Auto-seeding database for Vercel/serverless startup...")
+            print("[Startup] Seeding default demo users...")
             demo_users = [
                 {"email": "executive@example.com", "full_name": "Chief Executive Officer", "role": "Executive"},
                 {"email": "sales@example.com", "full_name": "Sales Manager", "role": "Sales Manager"},
@@ -47,23 +48,40 @@ def startup_event():
                 db.add(User(email=u["email"], hashed_password=default_password, full_name=u["full_name"], role=u["role"]))
             db.commit()
 
-            etl = ETLEngine(db)
-            etl.run_full_pipeline()
+            # Only run ETL if sales table is also empty and raw data directory exists
+            if sales_count == 0:
+                try:
+                    from app.services.etl_engine import ETLEngine, DATA_RAW_DIR
+                    if os.path.exists(DATA_RAW_DIR):
+                        print("[Startup] Running initial ETL pipeline...")
+                        etl = ETLEngine(db)
+                        etl.run_full_pipeline()
+                except Exception as etl_err:
+                    print(f"[Startup] Non-critical ETL notice: {etl_err}")
+
         db.close()
     except Exception as e:
-        print(f"Startup database check info: {e}")
+        print(f"[Startup] Database verification note: {e}")
 
-# Include API Routers
-app.include_router(auth.router, prefix=settings.API_V1_STR)
-app.include_router(kpis.router, prefix=settings.API_V1_STR)
-app.include_router(dashboards.router, prefix=settings.API_V1_STR)
-app.include_router(analytics.router, prefix=settings.API_V1_STR)
-app.include_router(insights.router, prefix=settings.API_V1_STR)
-app.include_router(etl.router, prefix=settings.API_V1_STR)
-app.include_router(export.router, prefix=settings.API_V1_STR)
+# Include API Routers with dual prefixes for full Vercel compatibility
+from fastapi import APIRouter
+api_router = APIRouter()
+api_router.include_router(auth.router)
+api_router.include_router(kpis.router)
+api_router.include_router(dashboards.router)
+api_router.include_router(analytics.router)
+api_router.include_router(insights.router)
+api_router.include_router(etl.router)
+api_router.include_router(export.router)
+
+# Mount both with and without prefix so requests to /api/... or direct /... both resolve flawlessly
+app.include_router(api_router, prefix=settings.API_V1_STR)
+app.include_router(api_router)
 
 @app.get("/")
 @app.get("/api")
+@app.get("/health")
+@app.get("/api/health")
 def root():
     return {
         "status": "online",

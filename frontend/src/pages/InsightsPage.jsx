@@ -6,18 +6,23 @@ export const InsightsPage = () => {
   const [insights, setInsights] = useState([]);
   const [loading, setLoading] = useState(true);
 
+  const [error, setError] = useState(null);
+
+  const fetchInsights = async () => {
+    setLoading(true);
+    setError(null);
+    try {
+      const res = await api.get('/insights');
+      setInsights(res.data);
+    } catch (err) {
+      console.error('Failed to load insights', err);
+      setError(err.message || 'Failed to load business insights.');
+    } finally {
+      setLoading(false);
+    }
+  };
+
   useEffect(() => {
-    const fetchInsights = async () => {
-      setLoading(true);
-      try {
-        const res = await api.get('/insights');
-        setInsights(res.data);
-      } catch (err) {
-        console.error('Failed to load insights', err);
-      } finally {
-        setLoading(false);
-      }
-    };
     fetchInsights();
   }, []);
 
@@ -26,6 +31,20 @@ export const InsightsPage = () => {
       <div className="flex items-center justify-center h-64 text-slate-500 gap-2">
         <RefreshCw size={20} className="animate-spin text-blue-600" />
         <span>Scanning Data Warehouse & generating automated business insights...</span>
+      </div>
+    );
+  }
+
+  if (error || !insights) {
+    return (
+      <div className="flex flex-col items-center justify-center h-64 text-slate-600 gap-3 bg-white rounded-xl border border-slate-200 p-6">
+        <p className="text-sm font-medium text-red-600">{error || 'No insights available.'}</p>
+        <button
+          onClick={fetchInsights}
+          className="flex items-center gap-1.5 px-4 py-2 bg-blue-600 text-white rounded-lg text-xs font-semibold hover:bg-blue-700 transition"
+        >
+          <RefreshCw size={14} /> Retry Loading
+        </button>
       </div>
     );
   }

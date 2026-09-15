@@ -40,10 +40,11 @@ frontend/node_modules/
 frontend/dist/
 
 # Local databases & logs
-*.db
 *.sqlite3
-bi_warehouse.db
 *.log
+# Allow seeded BI warehouse database for Vercel deployment
+!bi_warehouse.db
+!api/bi_warehouse.db
 
 # Environment variables
 .env

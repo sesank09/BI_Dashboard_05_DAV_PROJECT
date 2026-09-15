@@ -7,19 +7,23 @@ export const AnalyticsPage = () => {
   const [dataset, setDataset] = useState('sales');
   const [data, setData] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  const fetchEDA = async () => {
+    setLoading(true);
+    setError(null);
+    try {
+      const res = await api.get(`/analytics/eda?dataset=${dataset}`);
+      setData(res.data);
+    } catch (err) {
+      console.error('Failed to load EDA stats', err);
+      setError(err.message || 'Failed to load exploratory data analysis.');
+    } finally {
+      setLoading(false);
+    }
+  };
 
   useEffect(() => {
-    const fetchEDA = async () => {
-      setLoading(true);
-      try {
-        const res = await api.get(`/analytics/eda?dataset=${dataset}`);
-        setData(res.data);
-      } catch (err) {
-        console.error('Failed to load EDA stats', err);
-      } finally {
-        setLoading(false);
-      }
-    };
     fetchEDA();
   }, [dataset]);
 
@@ -39,8 +43,8 @@ export const AnalyticsPage = () => {
             <button
               key={d}
               onClick={() => setDataset(d)}
-              className={`px-3 py-1.5 rounded-md capitalize transition-all ${
-                dataset === d ? 'bg-[#123A6D] text-white shadow' : 'text-slate-600 hover:bg-slate-100'
+              className={`px-3 py-1 rounded-md capitalize transition ${
+                dataset === d ? 'bg-blue-600 text-white' : 'text-slate-600 hover:bg-slate-100'
               }`}
             >
               {d}
@@ -49,10 +53,20 @@ export const AnalyticsPage = () => {
         </div>
       </div>
 
-      {loading || !data ? (
+      {loading ? (
         <div className="flex items-center justify-center h-64 text-slate-500 gap-2">
           <RefreshCw size={20} className="animate-spin text-blue-600" />
           <span>Calculating dataset summary statistics...</span>
+        </div>
+      ) : error || !data ? (
+        <div className="flex flex-col items-center justify-center h-64 text-slate-600 gap-3 bg-white rounded-xl border border-slate-200 p-6">
+          <p className="text-sm font-medium text-red-600">{error || 'No analytics data available for this dataset.'}</p>
+          <button
+            onClick={fetchEDA}
+            className="flex items-center gap-1.5 px-4 py-2 bg-blue-600 text-white rounded-lg text-xs font-semibold hover:bg-blue-700 transition"
+          >
+            <RefreshCw size={14} /> Retry Loading
+          </button>
         </div>
       ) : (
         <>

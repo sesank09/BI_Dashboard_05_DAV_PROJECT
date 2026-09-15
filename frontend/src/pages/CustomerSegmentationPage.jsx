@@ -7,14 +7,17 @@ export const CustomerSegmentationPage = () => {
   const [data, setData] = useState(null);
   const [loading, setLoading] = useState(true);
   const [clusters, setClusters] = useState(5);
+  const [error, setError] = useState(null);
 
   const fetchRFM = async () => {
     setLoading(true);
+    setError(null);
     try {
       const res = await api.post(`/analytics/rfm?n_clusters=${clusters}`);
       setData(res.data);
     } catch (err) {
       console.error('Failed to run RFM clustering', err);
+      setError(err.message || 'Failed to run customer segmentation clustering.');
     } finally {
       setLoading(false);
     }
@@ -39,8 +42,8 @@ export const CustomerSegmentationPage = () => {
             <button
               key={k}
               onClick={() => setClusters(k)}
-              className={`px-3 py-1 rounded transition-all ${
-                clusters === k ? 'bg-[#2563EB] text-white shadow' : 'text-slate-600 hover:bg-slate-100'
+              className={`px-3 py-1 rounded-md transition ${
+                clusters === k ? 'bg-blue-600 text-white' : 'text-slate-600 hover:bg-slate-100'
               }`}
             >
               K={k}
@@ -49,10 +52,20 @@ export const CustomerSegmentationPage = () => {
         </div>
       </div>
 
-      {loading || !data ? (
+      {loading ? (
         <div className="flex items-center justify-center h-64 text-slate-500 gap-2">
           <RefreshCw size={20} className="animate-spin text-blue-600" />
           <span>Executing Scikit-learn K-Means RFM Clustering algorithm...</span>
+        </div>
+      ) : error || !data ? (
+        <div className="flex flex-col items-center justify-center h-64 text-slate-600 gap-3 bg-white rounded-xl border border-slate-200 p-6">
+          <p className="text-sm font-medium text-red-600">{error || 'No customer segmentation data available.'}</p>
+          <button
+            onClick={fetchRFM}
+            className="flex items-center gap-1.5 px-4 py-2 bg-blue-600 text-white rounded-lg text-xs font-semibold hover:bg-blue-700 transition"
+          >
+            <RefreshCw size={14} /> Retry Clustering
+          </button>
         </div>
       ) : (
         <>

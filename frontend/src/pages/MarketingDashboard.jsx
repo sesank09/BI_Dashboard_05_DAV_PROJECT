@@ -7,27 +7,45 @@ import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContaine
 export const MarketingDashboard = () => {
   const [data, setData] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  const fetchData = async () => {
+    setLoading(true);
+    setError(null);
+    try {
+      const res = await api.get('/dashboards/marketing');
+      setData(res.data);
+    } catch (err) {
+      console.error('Failed to load marketing dashboard', err);
+      setError(err.message || 'Failed to load marketing analytics data.');
+    } finally {
+      setLoading(false);
+    }
+  };
 
   useEffect(() => {
-    const fetchData = async () => {
-      setLoading(true);
-      try {
-        const res = await api.get('/dashboards/marketing');
-        setData(res.data);
-      } catch (err) {
-        console.error('Failed to load marketing dashboard', err);
-      } finally {
-        setLoading(false);
-      }
-    };
     fetchData();
   }, []);
 
-  if (loading || !data) {
+  if (loading) {
     return (
       <div className="flex items-center justify-center h-64 text-slate-500 gap-2">
         <RefreshCw size={20} className="animate-spin text-blue-600" />
         <span>Loading Marketing Analytics...</span>
+      </div>
+    );
+  }
+
+  if (error || !data) {
+    return (
+      <div className="flex flex-col items-center justify-center h-64 text-slate-600 gap-3 bg-white rounded-xl border border-slate-200 p-6">
+        <p className="text-sm font-medium text-red-600">{error || 'No marketing data available.'}</p>
+        <button
+          onClick={fetchData}
+          className="flex items-center gap-1.5 px-4 py-2 bg-blue-600 text-white rounded-lg text-xs font-semibold hover:bg-blue-700 transition"
+        >
+          <RefreshCw size={14} /> Retry Loading
+        </button>
       </div>
     );
   }
