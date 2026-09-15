@@ -3,9 +3,17 @@ import shutil
 from sqlalchemy import create_engine
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
+from sqlalchemy.engine import make_url
 from app.config import settings
 
 db_url = settings.DATABASE_URL
+if not db_url or not db_url.strip() or "example.com" in db_url:
+    db_url = "sqlite:////tmp/bi_warehouse.db" if settings.IS_VERCEL else "sqlite:///./bi_warehouse.db"
+
+try:
+    make_url(db_url)
+except Exception:
+    db_url = "sqlite:////tmp/bi_warehouse.db" if settings.IS_VERCEL else "sqlite:///./bi_warehouse.db"
 
 # Handle Vercel / Serverless ephemeral /tmp database initialization
 if db_url.startswith("sqlite:////tmp/") or ("sqlite" in db_url and settings.IS_VERCEL):

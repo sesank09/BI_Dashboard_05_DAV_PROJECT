@@ -10,6 +10,13 @@ for path in [backend_dir, root_dir, current_dir]:
     if path not in sys.path:
         sys.path.insert(0, path)
 
+# Ensure DATABASE_URL is valid or reset to SQLite before loading app
+raw_db = os.environ.get("DATABASE_URL", "").strip()
+if not raw_db or "example.com" in raw_db:
+    os.environ["DATABASE_URL"] = "sqlite:////tmp/bi_warehouse.db"
+elif raw_db.startswith("postgres://"):
+    os.environ["DATABASE_URL"] = raw_db.replace("postgres://", "postgresql://", 1)
+
 # Seed /tmp database if running on Vercel
 tmp_db_path = "/tmp/bi_warehouse.db"
 try:

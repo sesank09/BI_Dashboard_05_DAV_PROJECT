@@ -1,6 +1,28 @@
 import os
 from pydantic_settings import BaseSettings
 
+def get_database_url() -> str:
+    raw = os.getenv("DATABASE_URL", "").strip()
+    is_vercel = bool("VERCEL" in os.environ or "VERCEL_ENV" in os.environ)
+    fallback = "sqlite:////tmp/bi_warehouse.db" if is_vercel else "sqlite:///./bi_warehouse.db"
+    
+    if not raw or "example.com" in raw:
+        return fallback
+    
+    if raw.startswith("postgres://"):
+        raw = raw.replace("postgres://", "postgresql://", 1)
+        
+    try:
+        from sqlalchemy.engine import make_url
+        parsed = make_url(raw)
+        if parsed.drivername:
+            return raw
+    except Exception as e:
+        print(f"[Config] Invalid DATABASE_URL '{raw}', falling back to {fallback}: {e}")
+        return fallback
+        
+    return fallback
+
 class Settings(BaseSettings):
     PROJECT_NAME: str = "Enterprise Business Intelligence Platform"
     API_V1_STR: str = "/api"
@@ -12,10 +34,7 @@ class Settings(BaseSettings):
     IS_VERCEL: bool = "VERCEL" in os.environ or "VERCEL_ENV" in os.environ
     
     # SQLite default fallback with PostgreSQL compatibility
-    DATABASE_URL: str = os.getenv(
-        "DATABASE_URL", 
-        "sqlite:////tmp/bi_warehouse.db" if ("VERCEL" in os.environ or "VERCEL_ENV" in os.environ) else "sqlite:///./bi_warehouse.db"
-    )
+    DATABASE_URL: str = get_database_url()
     
     class Config:
         case_sensitive = True
