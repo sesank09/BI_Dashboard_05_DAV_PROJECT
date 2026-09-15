@@ -1,8 +1,13 @@
 import pandas as pd
 import numpy as np
-from sklearn.cluster import KMeans
-from sklearn.preprocessing import StandardScaler
-from sklearn.ensemble import IsolationForest
+
+try:
+    from sklearn.cluster import KMeans
+    from sklearn.preprocessing import StandardScaler
+    HAS_SKLEARN = True
+except ImportError:
+    HAS_SKLEARN = False
+
 from sqlalchemy.orm import Session
 from app.database.schema import FactSales, FactFinance, FactHR, FactMarketing, FactOperations, DimCustomer
 
@@ -84,20 +89,29 @@ class AnalyticsEngine:
 
         rfm.columns = ["customer_id", "recency", "frequency", "monetary"]
 
-        # K-Means Clustering using Scikit-Learn
-        features = rfm[["recency", "frequency", "monetary"]]
-        scaler = StandardScaler()
-        scaled_features = scaler.fit_transform(features)
+        # K-Means Clustering using Scikit-Learn or quantile fallback
+        if HAS_SKLEARN:
+            features = rfm[["recency", "frequency", "monetary"]]
+            scaler = StandardScaler()
+            scaled_features = scaler.fit_transform(features)
 
-        kmeans = KMeans(n_clusters=n_clusters, random_state=42, n_init=10)
-        rfm["cluster"] = kmeans.fit_predict(scaled_features)
+            kmeans = KMeans(n_clusters=n_clusters, random_state=42, n_init=10)
+            rfm["cluster"] = kmeans.fit_predict(scaled_features)
 
-        # Map cluster numbers to meaningful Business Segments
-        cluster_means = rfm.groupby("cluster")["monetary"].mean().sort_values(ascending=False).index
-        segment_labels = ["Champions", "Loyal Customers", "Potential Loyalists", "At Risk", "Lost / Low Value"]
-        label_map = {cluster_means[i]: segment_labels[i] if i < len(segment_labels) else f"Segment {i+1}" for i in range(len(cluster_means))}
-        
-        rfm["segment_name"] = rfm["cluster"].map(label_map)
+            # Map cluster numbers to meaningful Business Segments
+            cluster_means = rfm.groupby("cluster")["monetary"].mean().sort_values(ascending=False).index
+            segment_labels = ["Champions", "Loyal Customers", "Potential Loyalists", "At Risk", "Lost / Low Value"]
+            label_map = {cluster_means[i]: segment_labels[i] if i < len(segment_labels) else f"Segment {i+1}" for i in range(len(cluster_means))}
+            rfm["segment_name"] = rfm["cluster"].map(label_map)
+        else:
+            # Robust quantile-based RFM classification fallback
+            q_count = min(max(n_clusters, 3), 5)
+            rfm["monetary_rank"] = pd.qcut(rfm["monetary"].rank(method="first"), q=q_count, labels=False)
+            labels = ["Lost / Low Value", "At Risk", "Potential Loyalists", "Loyal Customers", "Champions"]
+            label_slice = labels[-q_count:]
+            rfm["cluster"] = rfm["monetary_rank"]
+            rfm["segment_name"] = rfm["cluster"].map(lambda c: label_slice[min(int(c), len(label_slice)-1)])
+
 
         # Segment distribution summary
         segment_summary = rfm.groupby("segment_name").agg({

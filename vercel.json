@@ -5,8 +5,7 @@
   "framework": "vite",
   "functions": {
     "api/index.py": {
-      "includeFiles": "backend/**,api/**,bi_warehouse.db,data/**",
-      "maxDuration": 30
+      "includeFiles": "backend/**,api/**,bi_warehouse.db,data/**"
     }
   },
   "rewrites": [
