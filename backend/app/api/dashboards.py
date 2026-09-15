@@ -171,7 +171,7 @@ def get_marketing_dashboard(db: Session = Depends(get_db)):
 
     return {
         "kpis": {
-            "marketing_spend": {"name": "Marketing Spend", "value": round(float(mkt_df["campaign_cost"].sum()), 2), "unit": "$", "trend": "up"},
+            "marketing_spend": {"name": "Marketing Spend", "value": round(float(mkt_df["campaign_cost"].sum()), 2), "unit": "₹", "trend": "up"},
             "cac": kpis["cac"],
             "ltv": kpis["ltv"],
             "marketing_roi": kpis["marketing_roi"],

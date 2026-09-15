@@ -79,7 +79,7 @@ export const ExecutiveDashboard = () => {
 
         <div className="flex items-center gap-2">
           <a
-            href="http://localhost:8000/api/export/excel?dataset=sales"
+            href="/api/export/excel?dataset=sales"
             download
             className="flex items-center gap-1.5 px-3 py-1.5 bg-white border border-slate-200 text-slate-700 hover:bg-slate-50 rounded-lg text-xs font-semibold shadow-sm transition-all"
           >
@@ -93,7 +93,7 @@ export const ExecutiveDashboard = () => {
         <KPICard
           title={kpis.total_revenue?.name || 'Total Revenue'}
           value={kpis.total_revenue?.value}
-          unit="$"
+          unit="₹"
           changePct={kpis.total_revenue?.change_pct}
           source="FactSales"
           icon={DollarSign}
@@ -101,7 +101,7 @@ export const ExecutiveDashboard = () => {
         <KPICard
           title={kpis.total_profit?.name || 'Total Profit'}
           value={kpis.total_profit?.value}
-          unit="$"
+          unit="₹"
           changePct={kpis.total_profit?.change_pct}
           source="FactSales"
           icon={TrendingUp}
@@ -125,7 +125,7 @@ export const ExecutiveDashboard = () => {
         <KPICard
           title={kpis.ltv?.name || 'Customer LTV'}
           value={kpis.ltv?.value}
-          unit="$"
+          unit="₹"
           changePct={kpis.ltv?.change_pct}
           source="DimCustomer"
           icon={Users}
@@ -166,11 +166,11 @@ export const ExecutiveDashboard = () => {
                 </defs>
                 <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f1f5f9" />
                 <XAxis dataKey="month" tick={{ fontSize: 11 }} />
-                <YAxis tick={{ fontSize: 11 }} tickFormatter={(v) => `$${v / 1000}k`} />
-                <Tooltip formatter={(val) => `$${Number(val).toLocaleString()}`} />
+                <YAxis tick={{ fontSize: 11 }} tickFormatter={(v) => `₹${v / 1000}k`} />
+                <Tooltip formatter={(val) => `₹${Number(val).toLocaleString('en-IN')}`} />
                 <Legend wrapperStyle={{ fontSize: '12px' }} />
-                <Area type="monotone" dataKey="revenue" name="Revenue ($)" stroke="#2563EB" fillOpacity={1} fill="url(#colorRev)" strokeWidth={2} />
-                <Area type="monotone" dataKey="profit" name="Profit ($)" stroke="#0D9488" fillOpacity={1} fill="url(#colorProf)" strokeWidth={2} />
+                <Area type="monotone" dataKey="revenue" name="Revenue (₹)" stroke="#2563EB" fillOpacity={1} fill="url(#colorRev)" strokeWidth={2} />
+                <Area type="monotone" dataKey="profit" name="Profit (₹)" stroke="#0D9488" fillOpacity={1} fill="url(#colorProf)" strokeWidth={2} />
               </AreaChart>
             </ResponsiveContainer>
           </div>
@@ -199,7 +199,7 @@ export const ExecutiveDashboard = () => {
                     <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
                   ))}
                 </Pie>
-                <Tooltip formatter={(val) => `$${Number(val).toLocaleString()}`} />
+                <Tooltip formatter={(val) => `₹${Number(val).toLocaleString('en-IN')}`} />
                 <Legend wrapperStyle={{ fontSize: '11px' }} layout="vertical" align="right" verticalAlign="middle" />
               </RePie>
             </ResponsiveContainer>
@@ -220,11 +220,11 @@ export const ExecutiveDashboard = () => {
               <BarChart data={data.regional_performance}>
                 <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f1f5f9" />
                 <XAxis dataKey="region_name" tick={{ fontSize: 11 }} />
-                <YAxis tick={{ fontSize: 11 }} tickFormatter={(v) => `$${v / 1000}k`} />
-                <Tooltip formatter={(val) => `$${Number(val).toLocaleString()}`} />
+                <YAxis tick={{ fontSize: 11 }} tickFormatter={(v) => `₹${v / 1000}k`} />
+                <Tooltip formatter={(val) => `₹${Number(val).toLocaleString('en-IN')}`} />
                 <Legend wrapperStyle={{ fontSize: '12px' }} />
-                <Bar dataKey="revenue" name="Revenue" fill="#123A6D" radius={[4, 4, 0, 0]} />
-                <Bar dataKey="profit" name="Profit" fill="#0D9488" radius={[4, 4, 0, 0]} />
+                <Bar dataKey="revenue" name="Revenue (₹)" fill="#123A6D" radius={[4, 4, 0, 0]} />
+                <Bar dataKey="profit" name="Profit (₹)" fill="#0D9488" radius={[4, 4, 0, 0]} />
               </BarChart>
             </ResponsiveContainer>
           </div>

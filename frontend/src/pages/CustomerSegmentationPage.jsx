@@ -82,7 +82,7 @@ export const CustomerSegmentationPage = () => {
                 <div className="mt-2 text-xs space-y-1 text-slate-600 border-t border-slate-100 pt-2">
                   <div className="flex justify-between"><span>Avg Recency:</span> <span className="font-semibold">{seg.avg_recency} days</span></div>
                   <div className="flex justify-between"><span>Avg Freq:</span> <span className="font-semibold">{seg.avg_frequency} orders</span></div>
-                  <div className="flex justify-between"><span>Avg Monetary:</span> <span className="font-semibold text-emerald-700">${seg.avg_monetary}</span></div>
+                  <div className="flex justify-between"><span>Avg Monetary:</span> <span className="font-semibold text-emerald-700">₹{Number(seg.avg_monetary).toLocaleString('en-IN')}</span></div>
                 </div>
               </div>
             ))}
@@ -99,9 +99,9 @@ export const CustomerSegmentationPage = () => {
                 <BarChart data={data.segment_summary}>
                   <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f1f5f9" />
                   <XAxis dataKey="segment_name" tick={{ fontSize: 11 }} />
-                  <YAxis tick={{ fontSize: 11 }} tickFormatter={(v) => `$${v / 1000}k`} />
-                  <Tooltip formatter={(val) => `$${Number(val).toLocaleString()}`} />
-                  <Bar dataKey="total_revenue" name="Total Revenue ($)" fill="#123A6D" radius={[4, 4, 0, 0]} />
+                  <YAxis tick={{ fontSize: 11 }} tickFormatter={(v) => `₹${v / 1000}k`} />
+                  <Tooltip formatter={(val) => `₹${Number(val).toLocaleString('en-IN')}`} />
+                  <Bar dataKey="total_revenue" name="Total Revenue (₹)" fill="#123A6D" radius={[4, 4, 0, 0]} />
                 </BarChart>
               </ResponsiveContainer>
             </div>
@@ -120,7 +120,7 @@ export const CustomerSegmentationPage = () => {
                     <th className="py-2.5 px-3">Customer ID</th>
                     <th className="py-2.5 px-3">Recency (Days)</th>
                     <th className="py-2.5 px-3">Frequency (Orders)</th>
-                    <th className="py-2.5 px-3">Monetary Value ($)</th>
+                    <th className="py-2.5 px-3">Monetary Value (₹)</th>
                     <th className="py-2.5 px-3">Assigned RFM Segment</th>
                   </tr>
                 </thead>
@@ -130,7 +130,7 @@ export const CustomerSegmentationPage = () => {
                       <td className="py-2.5 px-3 font-semibold text-slate-800">{c.customer_id}</td>
                       <td className="py-2.5 px-3 text-slate-600">{c.recency} days ago</td>
                       <td className="py-2.5 px-3 text-slate-600">{c.frequency} transactions</td>
-                      <td className="py-2.5 px-3 text-emerald-700 font-bold">${Number(c.monetary).toLocaleString()}</td>
+                      <td className="py-2.5 px-3 text-emerald-700 font-bold">₹{Number(c.monetary).toLocaleString('en-IN')}</td>
                       <td className="py-2.5 px-3">
                         <span className="bg-slate-100 border border-slate-200 text-slate-800 px-2 py-0.5 rounded text-[11px] font-semibold">
                           {c.segment_name}

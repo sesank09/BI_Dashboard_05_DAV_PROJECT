@@ -6,13 +6,13 @@ export const KPICard = ({ title, value, unit = '', changePct, trend = 'up', desc
 
   const formatValue = (val) => {
     if (val === undefined || val === null) return 'N/A';
-    if (unit === '$') {
-      return `$${Number(val).toLocaleString('en-US', { maximumFractionDigits: 2 })}`;
+    if (unit === '$' || unit === '₹' || unit === 'INR') {
+      return `₹${Number(val).toLocaleString('en-IN', { maximumFractionDigits: 2 })}`;
     }
     if (unit === '%') {
       return `${val}%`;
     }
-    return `${Number(val).toLocaleString('en-US')} ${unit}`.trim();
+    return `${Number(val).toLocaleString('en-IN')} ${unit}`.trim();
   };
 
   return (

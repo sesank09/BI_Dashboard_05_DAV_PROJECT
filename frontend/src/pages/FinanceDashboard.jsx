@@ -72,7 +72,7 @@ export const FinanceDashboard = () => {
         <KPICard
           title="Gross Revenue"
           value={kpis.total_revenue?.value}
-          unit="$"
+          unit="₹"
           changePct={kpis.total_revenue?.change_pct}
           source="FactFinance"
           icon={DollarSign}
@@ -80,7 +80,7 @@ export const FinanceDashboard = () => {
         <KPICard
           title="Operating Expense"
           value={kpis.operating_expense?.value}
-          unit="$"
+          unit="₹"
           changePct={kpis.operating_expense?.change_pct}
           source="FactFinance"
           icon={Wallet}
@@ -88,7 +88,7 @@ export const FinanceDashboard = () => {
         <KPICard
           title="Net Profit"
           value={kpis.total_profit?.value}
-          unit="$"
+          unit="₹"
           changePct={kpis.total_profit?.change_pct}
           source="FactFinance"
           icon={TrendingUp}
@@ -104,7 +104,7 @@ export const FinanceDashboard = () => {
         <KPICard
           title="Net Cash Flow"
           value={kpis.cash_flow?.value}
-          unit="$"
+          unit="₹"
           changePct={kpis.cash_flow?.change_pct}
           source="FactFinance"
           icon={Wallet}
@@ -123,12 +123,12 @@ export const FinanceDashboard = () => {
               <AreaChart data={data.monthly_finance_trend}>
                 <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f1f5f9" />
                 <XAxis dataKey="month" tick={{ fontSize: 11 }} />
-                <YAxis tick={{ fontSize: 11 }} tickFormatter={(v) => `$${v / 1000}k`} />
-                <Tooltip formatter={(val) => `$${Number(val).toLocaleString()}`} />
+                <YAxis tick={{ fontSize: 11 }} tickFormatter={(v) => `₹${v / 1000}k`} />
+                <Tooltip formatter={(val) => `₹${Number(val).toLocaleString('en-IN')}`} />
                 <Legend wrapperStyle={{ fontSize: '12px' }} />
-                <Area type="monotone" dataKey="revenue" name="Revenue ($)" stroke="#2563EB" fill="#2563EB" fillOpacity={0.1} strokeWidth={2} />
-                <Area type="monotone" dataKey="operating_expense" name="Operating Expense ($)" stroke="#EF4444" fill="#EF4444" fillOpacity={0.1} strokeWidth={2} />
-                <Area type="monotone" dataKey="operating_profit" name="Operating Profit ($)" stroke="#10B981" fill="#10B981" fillOpacity={0.1} strokeWidth={2} />
+                <Area type="monotone" dataKey="revenue" name="Revenue (₹)" stroke="#2563EB" fill="#2563EB" fillOpacity={0.1} strokeWidth={2} />
+                <Area type="monotone" dataKey="operating_expense" name="Operating Expense (₹)" stroke="#EF4444" fill="#EF4444" fillOpacity={0.1} strokeWidth={2} />
+                <Area type="monotone" dataKey="operating_profit" name="Operating Profit (₹)" stroke="#10B981" fill="#10B981" fillOpacity={0.1} strokeWidth={2} />
               </AreaChart>
             </ResponsiveContainer>
           </div>
@@ -155,7 +155,7 @@ export const FinanceDashboard = () => {
                     <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
                   ))}
                 </Pie>
-                <Tooltip formatter={(val) => `$${Number(val).toLocaleString()}`} />
+                <Tooltip formatter={(val) => `₹${Number(val).toLocaleString('en-IN')}`} />
                 <Legend wrapperStyle={{ fontSize: '11px' }} />
               </RePie>
             </ResponsiveContainer>

@@ -207,8 +207,8 @@ class AnalyticsEngine:
                 "anomaly_id": f"ANOM-REV-{row['order_date']}",
                 "date": str(row["order_date"]),
                 "metric": "Daily Revenue",
-                "value": f"${round(float(row['revenue']), 2):,}",
-                "expected_range": f"${round(lower_bound, 2):,} - ${round(upper_bound, 2):,}",
+                "value": f"₹{round(float(row['revenue']), 2):,}",
+                "expected_range": f"₹{round(lower_bound, 2):,} - ₹{round(upper_bound, 2):,}",
                 "severity": "HIGH" if is_drop else "MEDIUM",
                 "explanation": "Revenue dropped unexpectedly below normal baseline." if is_drop else "Unusual revenue spike detected."
             })
@@ -224,8 +224,8 @@ class AnalyticsEngine:
                 "anomaly_id": f"ANOM-EXP-{row['transaction_date']}",
                 "date": str(row["transaction_date"]),
                 "metric": "Operating Expense",
-                "value": f"${round(float(row['operating_expense']), 2):,}",
-                "expected_range": f"<= ${round(upper_exp, 2):,}",
+                "value": f"₹{round(float(row['operating_expense']), 2):,}",
+                "expected_range": f"<= ₹{round(upper_exp, 2):,}",
                 "severity": "HIGH",
                 "explanation": "Operating expenditure exceeded statistical upper control limit."
             })

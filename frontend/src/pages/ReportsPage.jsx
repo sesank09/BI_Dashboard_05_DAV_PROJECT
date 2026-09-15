@@ -39,7 +39,7 @@ export const ReportsPage = () => {
         {/* Download Buttons */}
         <div className="pt-6 border-t border-slate-100 grid grid-cols-1 md:grid-cols-3 gap-4">
           <a
-            href={`http://localhost:8000/api/export/csv?dataset=${dataset}`}
+            href={`/api/export/csv?dataset=${dataset}`}
             download
             className="p-5 border border-slate-200 rounded-xl hover:border-blue-500 hover:bg-blue-50/30 transition-all flex flex-col justify-between"
           >
@@ -54,7 +54,7 @@ export const ReportsPage = () => {
           </a>
 
           <a
-            href={`http://localhost:8000/api/export/excel?dataset=${dataset}`}
+            href={`/api/export/excel?dataset=${dataset}`}
             download
             className="p-5 border border-slate-200 rounded-xl hover:border-emerald-500 hover:bg-emerald-50/30 transition-all flex flex-col justify-between"
           >
@@ -69,7 +69,7 @@ export const ReportsPage = () => {
           </a>
 
           <a
-            href={`http://localhost:8000/api/export/pdf?dataset=${dataset}`}
+            href={`/api/export/pdf?dataset=${dataset}`}
             download
             className="p-5 border border-slate-200 rounded-xl hover:border-purple-500 hover:bg-purple-50/30 transition-all flex flex-col justify-between"
           >

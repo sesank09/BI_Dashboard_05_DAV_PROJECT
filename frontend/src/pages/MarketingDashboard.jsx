@@ -64,7 +64,7 @@ export const MarketingDashboard = () => {
         <KPICard
           title="Marketing Spend"
           value={kpis.marketing_spend?.value}
-          unit="$"
+          unit="₹"
           changePct={2.5}
           source="FactMarketing"
           icon={Megaphone}
@@ -72,7 +72,7 @@ export const MarketingDashboard = () => {
         <KPICard
           title="Customer Acq Cost (CAC)"
           value={kpis.cac?.value}
-          unit="$"
+          unit="₹"
           changePct={kpis.cac?.change_pct}
           source="FactMarketing"
           icon={Users}
@@ -80,7 +80,7 @@ export const MarketingDashboard = () => {
         <KPICard
           title="Lifetime Value (LTV)"
           value={kpis.ltv?.value}
-          unit="$"
+          unit="₹"
           changePct={kpis.ltv?.change_pct}
           source="DimCustomer"
           icon={Target}
@@ -120,7 +120,7 @@ export const MarketingDashboard = () => {
                 <Tooltip />
                 <Legend wrapperStyle={{ fontSize: '12px' }} />
                 <Bar dataKey="roi" name="ROI (%)" fill="#0D9488" radius={[4, 4, 0, 0]} />
-                <Bar dataKey="cac" name="CAC ($)" fill="#2563EB" radius={[4, 4, 0, 0]} />
+                <Bar dataKey="cac" name="CAC (₹)" fill="#2563EB" radius={[4, 4, 0, 0]} />
               </BarChart>
             </ResponsiveContainer>
           </div>
