@@ -1,5 +1,6 @@
 import os
 from pydantic_settings import BaseSettings
+from pydantic import model_validator
 
 def get_database_url() -> str:
     raw = os.getenv("DATABASE_URL", "").strip()
@@ -36,6 +37,14 @@ class Settings(BaseSettings):
     # SQLite default fallback with PostgreSQL compatibility
     DATABASE_URL: str = get_database_url()
     
+    @model_validator(mode='after')
+    def ensure_non_empty(self):
+        if not self.PROJECT_NAME or not self.PROJECT_NAME.strip():
+            self.PROJECT_NAME = "Enterprise Business Intelligence Platform"
+        if not self.API_V1_STR or not self.API_V1_STR.strip():
+            self.API_V1_STR = "/api"
+        return self
+
     class Config:
         case_sensitive = True
 

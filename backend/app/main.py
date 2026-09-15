@@ -5,7 +5,7 @@ from app.config import settings
 from app.api import auth, kpis, dashboards, analytics, insights, etl, export
 
 app = FastAPI(
-    title=settings.PROJECT_NAME,
+    title=settings.PROJECT_NAME or "Enterprise Business Intelligence Platform",
     description="Enterprise Business Intelligence Platform for Organizational Performance Analytics",
     version="1.0.0"
 )
