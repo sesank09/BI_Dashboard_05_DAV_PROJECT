@@ -2,12 +2,12 @@ import os
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from app.config import settings
-from app.api import auth, kpis, dashboards, analytics, insights, etl, export
+from app.api import auth, kpis, dashboards, analytics, insights, etl, export, data, cross_functional, models, simulation, experiments
 
 app = FastAPI(
-    title=settings.PROJECT_NAME or "Enterprise Business Intelligence Platform",
-    description="Enterprise Business Intelligence Platform for Organizational Performance Analytics",
-    version="1.0.0"
+    title=settings.PROJECT_NAME or "Adaptive Cross-Functional Decision Intelligence Engine (ACDIE)",
+    description="ACDIE: Adaptive Cross-Functional Decision Intelligence Engine for Organizational Performance Analytics",
+    version="2.0.0"
 )
 
 # Enable CORS for React frontend & Vercel deployments
@@ -48,14 +48,13 @@ def startup_event():
                 db.add(User(email=u["email"], hashed_password=default_password, full_name=u["full_name"], role=u["role"]))
             db.commit()
 
-            # Only run ETL if sales table is also empty and raw data directory exists
+            # Run ETL on initial startup if sales table is empty
             if sales_count == 0:
                 try:
-                    from app.services.etl_engine import ETLEngine, DATA_RAW_DIR
-                    if os.path.exists(DATA_RAW_DIR):
-                        print("[Startup] Running initial ETL pipeline...")
-                        etl = ETLEngine(db)
-                        etl.run_full_pipeline()
+                    from app.services.etl_engine import ETLEngine
+                    print("[Startup] Running initial ACDIE ETL pipeline...")
+                    etl_proc = ETLEngine(db)
+                    etl_proc.run_full_pipeline()
                 except Exception as etl_err:
                     print(f"[Startup] Non-critical ETL notice: {etl_err}")
 
@@ -73,6 +72,11 @@ api_router.include_router(analytics.router)
 api_router.include_router(insights.router)
 api_router.include_router(etl.router)
 api_router.include_router(export.router)
+api_router.include_router(data.router)
+api_router.include_router(cross_functional.router)
+api_router.include_router(models.router)
+api_router.include_router(simulation.router)
+api_router.include_router(experiments.router)
 
 # Mount both with and without prefix so requests to /api/... or direct /... both resolve flawlessly
 app.include_router(api_router, prefix=settings.API_V1_STR)
