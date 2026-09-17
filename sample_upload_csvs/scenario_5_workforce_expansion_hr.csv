@@ -1,0 +1,151 @@
+log_id,employee_id,employee_name,department,region_id,productivity_score,performance_score,training_hours,satisfaction_score,overtime_hours,attrition_status
+HR-BOOST-0000,EMP-1001,High Performer 1,Marketing,REG-01,92.7,92.2,50.2,4.62,0.4,No
+HR-BOOST-0001,EMP-1002,High Performer 2,Finance,REG-01,97.8,97.6,56.7,4.97,4.4,No
+HR-BOOST-0002,EMP-1003,High Performer 3,Finance,REG-04,93.5,92.4,50.2,4.73,6.2,No
+HR-BOOST-0003,EMP-1004,High Performer 4,Sales,REG-05,92.1,92.0,56.1,4.8,5.5,No
+HR-BOOST-0004,EMP-1005,High Performer 5,Operations,REG-01,92.1,90.3,52.1,4.52,8.2,No
+HR-BOOST-0005,EMP-1006,High Performer 6,Finance,REG-05,90.2,89.6,41.6,4.91,6.6,No
+HR-BOOST-0006,EMP-1007,High Performer 7,Customer Support,REG-02,92.4,92.4,29.1,4.86,0.1,No
+HR-BOOST-0007,EMP-1008,High Performer 8,Engineering,REG-01,91.5,89.8,38.3,4.53,7.2,No
+HR-BOOST-0008,EMP-1009,High Performer 9,Marketing,REG-04,90.7,89.0,59.8,5.0,4.5,No
+HR-BOOST-0009,EMP-1010,High Performer 10,Marketing,REG-02,96.7,95.9,56.4,4.66,0.1,No
+HR-BOOST-0010,EMP-1011,High Performer 11,Customer Support,REG-03,98.1,97.3,34.6,4.75,1.3,No
+HR-BOOST-0011,EMP-1012,High Performer 12,Engineering,REG-01,97.2,95.5,53.3,4.73,3.6,No
+HR-BOOST-0012,EMP-1013,High Performer 13,Finance,REG-02,97.7,96.8,35.7,4.96,3.6,No
+HR-BOOST-0013,EMP-1014,High Performer 14,Sales,REG-05,97.9,96.4,55.4,4.91,7.0,No
+HR-BOOST-0014,EMP-1015,High Performer 15,Sales,REG-01,91.7,90.4,57.6,4.92,7.2,No
+HR-BOOST-0015,EMP-1016,High Performer 16,Customer Support,REG-03,97.2,97.1,30.9,4.61,7.4,No
+HR-BOOST-0016,EMP-1017,High Performer 17,Sales,REG-03,90.7,89.1,25.9,4.9,0.9,No
+HR-BOOST-0017,EMP-1018,High Performer 18,Customer Support,REG-03,91.6,90.7,53.5,4.67,8.2,No
+HR-BOOST-0018,EMP-1019,High Performer 19,Operations,REG-01,96.9,96.4,48.1,4.85,5.7,No
+HR-BOOST-0019,EMP-1020,High Performer 20,Finance,REG-03,97.9,97.9,59.0,4.87,1.7,No
+HR-BOOST-0020,EMP-1021,High Performer 21,Operations,REG-03,98.8,98.7,49.5,4.92,4.7,No
+HR-BOOST-0021,EMP-1022,High Performer 22,Customer Support,REG-05,90.6,89.3,58.6,4.71,8.7,No
+HR-BOOST-0022,EMP-1023,High Performer 23,Operations,REG-03,97.7,96.2,54.8,4.82,9.8,No
+HR-BOOST-0023,EMP-1024,High Performer 24,Engineering,REG-03,98.2,97.7,40.9,4.93,7.9,No
+HR-BOOST-0024,EMP-1025,High Performer 25,Engineering,REG-04,93.2,92.8,53.3,4.6,3.8,No
+HR-BOOST-0025,EMP-1026,High Performer 26,Operations,REG-04,91.8,90.5,44.2,4.78,10.0,No
+HR-BOOST-0026,EMP-1027,High Performer 27,Customer Support,REG-04,91.9,91.3,49.5,4.67,3.2,No
+HR-BOOST-0027,EMP-1028,High Performer 28,Operations,REG-05,98.2,98.1,30.8,4.56,5.0,No
+HR-BOOST-0028,EMP-1029,High Performer 29,Finance,REG-04,91.9,90.2,47.6,4.57,2.5,No
+HR-BOOST-0029,EMP-1030,High Performer 30,Finance,REG-05,94.9,93.1,42.6,4.93,0.9,No
+HR-BOOST-0030,EMP-1031,High Performer 31,Finance,REG-03,90.0,90.1,59.4,4.7,0.3,No
+HR-BOOST-0031,EMP-1032,High Performer 32,Finance,REG-01,90.0,89.6,25.1,4.76,8.5,No
+HR-BOOST-0032,EMP-1033,High Performer 33,Marketing,REG-04,90.7,89.0,32.3,4.86,0.1,No
+HR-BOOST-0033,EMP-1034,High Performer 34,Sales,REG-04,92.9,91.7,41.5,4.96,9.8,No
+HR-BOOST-0034,EMP-1035,High Performer 35,Engineering,REG-01,97.5,97.5,32.9,4.83,3.4,No
+HR-BOOST-0035,EMP-1036,High Performer 36,Engineering,REG-03,98.5,98.2,25.7,4.64,9.8,No
+HR-BOOST-0036,EMP-1037,High Performer 37,Customer Support,REG-04,98.6,97.6,45.8,4.79,0.2,No
+HR-BOOST-0037,EMP-1038,High Performer 38,Operations,REG-02,90.0,88.4,43.0,4.71,6.2,No
+HR-BOOST-0038,EMP-1039,High Performer 39,Finance,REG-01,90.6,90.3,50.1,4.53,0.8,No
+HR-BOOST-0039,EMP-1040,High Performer 40,Marketing,REG-02,93.7,92.8,26.6,4.98,1.2,No
+HR-BOOST-0040,EMP-1041,High Performer 41,Finance,REG-04,97.0,96.4,27.8,4.8,1.1,No
+HR-BOOST-0041,EMP-1042,High Performer 42,Sales,REG-02,93.0,91.4,36.3,4.8,9.5,No
+HR-BOOST-0042,EMP-1043,High Performer 43,Marketing,REG-02,97.6,96.7,28.2,4.72,4.1,No
+HR-BOOST-0043,EMP-1044,High Performer 44,Customer Support,REG-03,99.2,98.0,58.7,4.77,0.8,No
+HR-BOOST-0044,EMP-1045,High Performer 45,Finance,REG-02,94.1,92.9,48.5,4.98,8.9,No
+HR-BOOST-0045,EMP-1046,High Performer 46,Finance,REG-03,98.0,97.6,30.6,4.62,2.8,No
+HR-BOOST-0046,EMP-1047,High Performer 47,Marketing,REG-01,94.1,92.7,52.5,4.52,3.4,No
+HR-BOOST-0047,EMP-1048,High Performer 48,Sales,REG-01,95.7,95.4,36.0,4.54,1.4,No
+HR-BOOST-0048,EMP-1049,High Performer 49,Customer Support,REG-02,96.6,95.1,53.7,4.51,3.7,No
+HR-BOOST-0049,EMP-1050,High Performer 50,Operations,REG-05,98.2,98.1,39.8,4.85,7.4,No
+HR-BOOST-0050,EMP-1051,High Performer 51,Marketing,REG-02,96.8,95.3,57.0,4.82,3.8,No
+HR-BOOST-0051,EMP-1052,High Performer 52,Operations,REG-05,95.0,94.1,41.8,4.98,2.9,No
+HR-BOOST-0052,EMP-1053,High Performer 53,Marketing,REG-02,96.2,94.4,30.5,4.86,6.1,No
+HR-BOOST-0053,EMP-1054,High Performer 54,Marketing,REG-03,94.0,93.1,38.0,4.96,5.7,No
+HR-BOOST-0054,EMP-1055,High Performer 55,Sales,REG-01,99.3,99.2,49.7,4.67,0.1,No
+HR-BOOST-0055,EMP-1056,High Performer 56,Operations,REG-03,90.6,90.1,36.0,4.93,1.9,No
+HR-BOOST-0056,EMP-1057,High Performer 57,Operations,REG-01,90.0,88.9,25.3,4.77,7.5,No
+HR-BOOST-0057,EMP-1058,High Performer 58,Sales,REG-05,98.4,98.0,53.6,4.67,6.6,No
+HR-BOOST-0058,EMP-1059,High Performer 59,Customer Support,REG-01,94.3,92.7,49.5,4.7,9.1,No
+HR-BOOST-0059,EMP-1060,High Performer 60,Marketing,REG-02,95.0,94.5,46.5,4.72,4.9,No
+HR-BOOST-0060,EMP-1061,High Performer 61,Sales,REG-02,90.3,89.6,34.6,4.68,1.7,No
+HR-BOOST-0061,EMP-1062,High Performer 62,Finance,REG-02,92.8,92.6,34.0,4.88,0.1,No
+HR-BOOST-0062,EMP-1063,High Performer 63,Customer Support,REG-01,94.8,93.7,43.6,4.7,3.2,No
+HR-BOOST-0063,EMP-1064,High Performer 64,Customer Support,REG-01,99.1,98.4,53.7,4.89,3.0,No
+HR-BOOST-0064,EMP-1065,High Performer 65,Finance,REG-03,97.3,96.1,47.7,4.89,4.2,No
+HR-BOOST-0065,EMP-1066,High Performer 66,Engineering,REG-04,91.0,90.5,35.7,4.92,6.4,No
+HR-BOOST-0066,EMP-1067,High Performer 67,Engineering,REG-01,93.3,92.3,55.5,4.91,1.8,No
+HR-BOOST-0067,EMP-1068,High Performer 68,Engineering,REG-05,99.3,98.5,48.7,4.75,4.0,No
+HR-BOOST-0068,EMP-1069,High Performer 69,Engineering,REG-04,98.3,96.9,36.2,4.79,5.5,No
+HR-BOOST-0069,EMP-1070,High Performer 70,Finance,REG-02,97.0,96.8,51.9,4.71,5.6,No
+HR-BOOST-0070,EMP-1071,High Performer 71,Marketing,REG-01,92.6,92.3,39.2,4.67,5.8,No
+HR-BOOST-0071,EMP-1072,High Performer 72,Customer Support,REG-02,92.7,92.2,48.6,4.75,7.9,No
+HR-BOOST-0072,EMP-1073,High Performer 73,Finance,REG-05,92.3,91.8,51.9,4.69,6.7,No
+HR-BOOST-0073,EMP-1074,High Performer 74,Finance,REG-05,96.9,96.9,38.5,4.53,8.6,No
+HR-BOOST-0074,EMP-1075,High Performer 75,Customer Support,REG-02,97.4,96.5,35.8,4.9,8.8,No
+HR-BOOST-0075,EMP-1076,High Performer 76,Marketing,REG-02,94.0,92.7,29.0,4.75,9.9,No
+HR-BOOST-0076,EMP-1077,High Performer 77,Marketing,REG-03,95.8,95.6,41.6,4.65,6.1,No
+HR-BOOST-0077,EMP-1078,High Performer 78,Operations,REG-01,97.3,96.9,44.3,4.85,0.8,No
+HR-BOOST-0078,EMP-1079,High Performer 79,Engineering,REG-04,96.6,96.4,38.2,4.92,5.8,No
+HR-BOOST-0079,EMP-1080,High Performer 80,Sales,REG-05,90.5,90.6,59.6,4.6,3.3,No
+HR-BOOST-0080,EMP-1081,High Performer 81,Marketing,REG-02,97.8,97.5,27.1,4.77,6.8,No
+HR-BOOST-0081,EMP-1082,High Performer 82,Engineering,REG-02,95.3,93.8,31.9,4.51,1.0,No
+HR-BOOST-0082,EMP-1083,High Performer 83,Finance,REG-05,96.1,95.9,37.5,4.72,3.0,No
+HR-BOOST-0083,EMP-1084,High Performer 84,Finance,REG-05,94.7,94.2,50.0,4.84,1.1,No
+HR-BOOST-0084,EMP-1085,High Performer 85,Sales,REG-01,93.3,92.3,30.2,4.54,0.8,No
+HR-BOOST-0085,EMP-1086,High Performer 86,Sales,REG-05,94.6,94.6,44.9,4.91,1.1,No
+HR-BOOST-0086,EMP-1087,High Performer 87,Sales,REG-04,92.4,92.2,59.7,4.55,5.5,No
+HR-BOOST-0087,EMP-1088,High Performer 88,Marketing,REG-05,97.2,95.5,59.3,4.86,3.7,No
+HR-BOOST-0088,EMP-1089,High Performer 89,Customer Support,REG-04,93.4,91.8,37.7,4.55,7.7,No
+HR-BOOST-0089,EMP-1090,High Performer 90,Operations,REG-05,98.1,97.1,59.4,4.83,1.6,No
+HR-BOOST-0090,EMP-1091,High Performer 91,Sales,REG-03,97.6,96.8,43.7,4.81,2.9,No
+HR-BOOST-0091,EMP-1092,High Performer 92,Finance,REG-02,91.9,90.1,43.6,4.88,6.9,No
+HR-BOOST-0092,EMP-1093,High Performer 93,Customer Support,REG-04,99.2,99.0,44.1,4.83,3.4,No
+HR-BOOST-0093,EMP-1094,High Performer 94,Operations,REG-01,96.1,94.8,33.6,4.98,4.8,No
+HR-BOOST-0094,EMP-1095,High Performer 95,Finance,REG-01,91.1,89.4,46.0,4.71,7.7,No
+HR-BOOST-0095,EMP-1096,High Performer 96,Finance,REG-03,94.4,93.8,33.2,4.95,4.1,No
+HR-BOOST-0096,EMP-1097,High Performer 97,Customer Support,REG-01,94.9,93.0,32.6,4.67,4.2,No
+HR-BOOST-0097,EMP-1098,High Performer 98,Operations,REG-03,96.7,96.1,51.8,4.54,9.3,No
+HR-BOOST-0098,EMP-1099,High Performer 99,Sales,REG-04,92.2,92.3,52.6,4.68,1.6,No
+HR-BOOST-0099,EMP-1100,High Performer 100,Customer Support,REG-03,95.3,94.1,40.4,4.63,10.0,No
+HR-BOOST-0100,EMP-1101,High Performer 101,Sales,REG-05,94.7,94.7,26.0,4.69,3.4,No
+HR-BOOST-0101,EMP-1102,High Performer 102,Marketing,REG-03,91.2,90.8,48.5,4.79,7.9,No
+HR-BOOST-0102,EMP-1103,High Performer 103,Operations,REG-05,94.0,93.0,33.1,4.67,2.6,No
+HR-BOOST-0103,EMP-1104,High Performer 104,Marketing,REG-04,95.8,95.8,29.7,4.88,1.3,No
+HR-BOOST-0104,EMP-1105,High Performer 105,Finance,REG-05,98.3,97.6,43.9,4.97,8.7,No
+HR-BOOST-0105,EMP-1106,High Performer 106,Sales,REG-03,93.8,92.7,27.1,4.98,9.4,No
+HR-BOOST-0106,EMP-1107,High Performer 107,Sales,REG-04,91.7,90.7,55.9,4.5,6.5,No
+HR-BOOST-0107,EMP-1108,High Performer 108,Customer Support,REG-04,98.0,97.5,33.9,4.68,8.7,No
+HR-BOOST-0108,EMP-1109,High Performer 109,Engineering,REG-04,99.4,99.3,30.2,4.55,9.0,No
+HR-BOOST-0109,EMP-1110,High Performer 110,Engineering,REG-01,98.2,97.4,32.5,4.66,7.3,No
+HR-BOOST-0110,EMP-1111,High Performer 111,Sales,REG-02,90.1,88.4,27.2,4.52,3.0,No
+HR-BOOST-0111,EMP-1112,High Performer 112,Marketing,REG-02,90.4,89.1,37.8,4.83,0.9,No
+HR-BOOST-0112,EMP-1113,High Performer 113,Sales,REG-05,90.2,89.9,31.2,4.59,0.9,No
+HR-BOOST-0113,EMP-1114,High Performer 114,Sales,REG-01,92.6,91.6,39.7,4.55,0.3,No
+HR-BOOST-0114,EMP-1115,High Performer 115,Customer Support,REG-03,91.1,89.6,36.5,4.92,9.1,No
+HR-BOOST-0115,EMP-1116,High Performer 116,Customer Support,REG-04,98.1,97.3,51.6,4.62,2.9,No
+HR-BOOST-0116,EMP-1117,High Performer 117,Engineering,REG-03,92.2,90.6,28.7,4.72,5.4,No
+HR-BOOST-0117,EMP-1118,High Performer 118,Operations,REG-03,93.5,92.2,37.4,4.87,0.3,No
+HR-BOOST-0118,EMP-1119,High Performer 119,Operations,REG-03,90.0,89.6,43.6,4.87,1.9,No
+HR-BOOST-0119,EMP-1120,High Performer 120,Finance,REG-01,92.9,92.6,57.0,4.59,8.1,No
+HR-BOOST-0120,EMP-1121,High Performer 121,Marketing,REG-03,96.2,94.6,58.4,4.88,3.2,No
+HR-BOOST-0121,EMP-1122,High Performer 122,Engineering,REG-03,92.6,91.7,34.8,4.91,2.4,No
+HR-BOOST-0122,EMP-1123,High Performer 123,Marketing,REG-05,94.5,93.4,48.9,4.75,3.9,No
+HR-BOOST-0123,EMP-1124,High Performer 124,Operations,REG-03,94.7,93.2,47.8,4.5,1.1,No
+HR-BOOST-0124,EMP-1125,High Performer 125,Engineering,REG-04,93.1,91.3,32.3,4.71,2.9,No
+HR-BOOST-0125,EMP-1126,High Performer 126,Customer Support,REG-03,91.1,89.5,48.5,4.86,3.3,No
+HR-BOOST-0126,EMP-1127,High Performer 127,Engineering,REG-02,94.3,93.0,43.2,4.74,3.4,No
+HR-BOOST-0127,EMP-1128,High Performer 128,Operations,REG-03,95.5,93.6,48.6,5.0,8.1,No
+HR-BOOST-0128,EMP-1129,High Performer 129,Engineering,REG-03,94.4,92.8,40.5,4.81,7.0,No
+HR-BOOST-0129,EMP-1130,High Performer 130,Marketing,REG-05,95.0,93.6,28.7,4.56,9.7,No
+HR-BOOST-0130,EMP-1131,High Performer 131,Engineering,REG-01,97.2,96.5,25.0,4.59,5.1,No
+HR-BOOST-0131,EMP-1132,High Performer 132,Engineering,REG-05,95.0,93.9,45.4,4.58,2.7,No
+HR-BOOST-0132,EMP-1133,High Performer 133,Finance,REG-01,97.4,95.9,43.6,4.92,1.1,No
+HR-BOOST-0133,EMP-1134,High Performer 134,Sales,REG-01,91.1,90.8,55.3,4.72,5.2,No
+HR-BOOST-0134,EMP-1135,High Performer 135,Operations,REG-03,97.0,95.5,59.3,4.73,3.7,No
+HR-BOOST-0135,EMP-1136,High Performer 136,Engineering,REG-05,91.8,90.4,30.8,4.57,1.7,No
+HR-BOOST-0136,EMP-1137,High Performer 137,Finance,REG-01,98.1,97.9,48.4,4.77,8.7,No
+HR-BOOST-0137,EMP-1138,High Performer 138,Engineering,REG-05,90.3,90.1,49.1,4.73,4.6,No
+HR-BOOST-0138,EMP-1139,High Performer 139,Finance,REG-05,90.8,89.1,28.6,4.97,8.6,No
+HR-BOOST-0139,EMP-1140,High Performer 140,Sales,REG-01,96.9,96.6,56.7,4.94,2.8,No
+HR-BOOST-0140,EMP-1141,High Performer 141,Operations,REG-03,95.9,95.3,52.8,5.0,9.5,No
+HR-BOOST-0141,EMP-1142,High Performer 142,Sales,REG-01,91.7,90.8,29.7,4.89,2.6,No
+HR-BOOST-0142,EMP-1143,High Performer 143,Engineering,REG-03,98.4,98.0,33.8,4.62,9.7,No
+HR-BOOST-0143,EMP-1144,High Performer 144,Sales,REG-01,98.6,97.5,48.2,4.82,5.5,No
+HR-BOOST-0144,EMP-1145,High Performer 145,Finance,REG-02,98.5,98.1,59.0,4.7,9.5,No
+HR-BOOST-0145,EMP-1146,High Performer 146,Marketing,REG-03,95.3,93.6,56.1,4.61,6.7,No
+HR-BOOST-0146,EMP-1147,High Performer 147,Sales,REG-05,97.0,96.0,48.7,4.92,4.7,No
+HR-BOOST-0147,EMP-1148,High Performer 148,Engineering,REG-01,98.0,96.2,36.0,4.54,5.1,No
+HR-BOOST-0148,EMP-1149,High Performer 149,Sales,REG-05,97.6,97.0,46.9,4.56,8.9,No
+HR-BOOST-0149,EMP-1150,High Performer 150,Operations,REG-01,91.6,90.5,31.7,4.82,3.6,No

@@ -86,22 +86,33 @@ class ETLEngine:
 
             # Clean nulls & standardize column schemas
             # Sales
+            if "discount" not in raw_sales.columns and "discount_pct" in raw_sales.columns:
+                raw_sales["discount"] = raw_sales["discount_pct"]
+            raw_sales["discount"] = raw_sales.get("discount", pd.Series(0.0, index=raw_sales.index)).fillna(0.0)
+            raw_sales["quantity"] = raw_sales.get("quantity", pd.Series(1, index=raw_sales.index)).fillna(1).astype(int)
+            raw_sales["unit_price"] = raw_sales.get("unit_price", pd.Series(1000.0, index=raw_sales.index)).fillna(1000.0)
+            
+            if "revenue" not in raw_sales.columns:
+                if "total_amount" in raw_sales.columns:
+                    raw_sales["revenue"] = raw_sales["total_amount"]
+                else:
+                    raw_sales["revenue"] = raw_sales["quantity"] * raw_sales["unit_price"] * (1.0 - raw_sales["discount"])
+            
+            if "cost" not in raw_sales.columns and "cogs" in raw_sales.columns:
+                raw_sales["cost"] = raw_sales["cogs"]
+            elif "cost" not in raw_sales.columns and "cost_amount" in raw_sales.columns:
+                raw_sales["cost"] = raw_sales["cost_amount"]
+            elif "cost" not in raw_sales.columns:
+                raw_sales["cost"] = raw_sales["revenue"] * 0.55
+                
+            raw_sales["profit"] = raw_sales["revenue"] - raw_sales["cost"]
+            
             if "sales_target" not in raw_sales.columns:
                 raw_sales["sales_target"] = raw_sales["revenue"] * np.random.uniform(0.9, 1.15, size=len(raw_sales))
             if "sales_rep_id" not in raw_sales.columns and "employee_id" in raw_sales.columns:
                 raw_sales["sales_rep_id"] = raw_sales["employee_id"]
-            if "discount" not in raw_sales.columns and "discount_pct" in raw_sales.columns:
-                raw_sales["discount"] = raw_sales["discount_pct"]
-            if "cost" not in raw_sales.columns and "cogs" in raw_sales.columns:
-                raw_sales["cost"] = raw_sales["cogs"]
-            if "cost" not in raw_sales.columns:
-                raw_sales["cost"] = raw_sales["revenue"] * 0.55
-
-            raw_sales["discount"] = raw_sales.get("discount", 0.0).fillna(0.0)
-            raw_sales["quantity"] = raw_sales.get("quantity", 1).fillna(1).astype(int)
-            raw_sales["unit_price"] = raw_sales.get("unit_price", 1000.0).fillna(1000.0)
-            raw_sales["revenue"] = raw_sales["quantity"] * raw_sales["unit_price"] * (1.0 - raw_sales["discount"])
-            raw_sales["profit"] = raw_sales["revenue"] - raw_sales["cost"]
+            elif "sales_rep_id" not in raw_sales.columns:
+                raw_sales["sales_rep_id"] = "EMP-1001"
 
             # Finance
             if "transaction_id" not in raw_finance.columns and "record_id" in raw_finance.columns:
