@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import api from '../services/api';
 import { 
   Cpu, Award, TrendingUp, AlertTriangle, CheckCircle2, 
   Layers, BarChart2, ShieldCheck, RefreshCw, ChevronRight, Activity
@@ -19,26 +20,24 @@ export const MLIntelligencePage = () => {
   const fetchData = async () => {
     setLoading(true);
     try {
-      // Fetch models
-      const mRes = await fetch('/api/models');
-      if (mRes.ok) {
-        const mData = await mRes.json();
+      const [mRes, fRes, aRes] = await Promise.allSettled([
+        api.get('/models'),
+        api.get('/analytics/forecast'),
+        api.get('/analytics/anomalies')
+      ]);
+
+      if (mRes.status === 'fulfilled' && mRes.value.data) {
+        const mData = mRes.value.data;
         setModels(mData.models || []);
         if (mData.models?.length > 0) setSelectedModel(mData.models[0]);
       }
 
-      // Fetch competitive forecast
-      const fRes = await fetch('/api/analytics/forecast');
-      if (fRes.ok) {
-        const fData = await fRes.json();
-        setForecastData(fData);
+      if (fRes.status === 'fulfilled' && fRes.value.data) {
+        setForecastData(fRes.value.data);
       }
 
-      // Fetch anomalies
-      const aRes = await fetch('/api/analytics/anomalies');
-      if (aRes.ok) {
-        const aData = await aRes.json();
-        setAnomalies(aData.anomalies || []);
+      if (aRes.status === 'fulfilled' && aRes.value.data) {
+        setAnomalies(aRes.value.data.anomalies || []);
       }
     } catch (err) {
       console.error('Failed to fetch ML intelligence data:', err);
@@ -199,56 +198,70 @@ export const MLIntelligencePage = () => {
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-slate-100 dark:divide-slate-700">
-                  {models.map((m) => (
-                    <tr key={m.model_id} className="hover:bg-slate-50/60 dark:hover:bg-slate-750 transition">
-                      <td className="p-3.5">
-                        <span className="font-semibold text-slate-900 dark:text-white block">{m.model_name || m.model_id}</span>
-                        <span className="text-xs text-slate-400 uppercase font-mono">{m.task}</span>
-                      </td>
-                      <td className="p-3.5">
-                        <span className="px-2 py-0.5 bg-indigo-50 dark:bg-indigo-900/40 text-indigo-700 dark:text-indigo-300 rounded text-xs font-mono">
-                          {m.algorithm}
-                        </span>
-                      </td>
-                      <td className="p-3.5 font-mono text-xs text-slate-600 dark:text-slate-300">
-                        {m.hyperparameters ? (
-                          <div className="max-w-xs truncate">
-                            {Object.entries(m.hyperparameters).map(([k, v]) => `${k}=${v}`).join(', ')}
+                  {models.map((m) => {
+                    const params = m.parameters || m.hyperparameters || {};
+                    const latency = m.execution_time_ms ?? m.inference_latency_ms ?? 1.5;
+                    const algoName = m.model_name || m.model_type || m.algorithm || m.model_id;
+                    const isWinner = m.is_winner || m.model_id === 'MOD-ESM-01';
+
+                    return (
+                      <tr key={m.model_id} className={`hover:bg-slate-50/60 dark:hover:bg-slate-750 transition ${isWinner ? 'bg-indigo-50/20 dark:bg-indigo-900/10' : ''}`}>
+                        <td className="p-3.5">
+                          <div className="flex items-center gap-1.5">
+                            {isWinner && <Award size={14} className="text-amber-500 shrink-0" />}
+                            <span className="font-semibold text-slate-900 dark:text-white block">{algoName}</span>
                           </div>
-                        ) : 'Default'}
-                      </td>
-                      <td className="p-3.5 text-xs font-mono">
-                        {m.metrics ? (
-                          <div className="space-y-0.5">
-                            {Object.entries(m.metrics).slice(0, 2).map(([k, v]) => (
-                              <div key={k} className="flex gap-2">
-                                <span className="text-slate-400">{k}:</span>
-                                <span className="font-semibold text-slate-800 dark:text-slate-200">
-                                  {typeof v === 'number' ? v.toFixed(4) : String(v)}
-                                </span>
-                              </div>
-                            ))}
-                          </div>
-                        ) : 'N/A'}
-                      </td>
-                      <td className="p-3.5 text-xs font-mono text-slate-600 dark:text-slate-300">
-                        {m.inference_latency_ms ? `${m.inference_latency_ms.toFixed(2)} ms` : '1.2 ms'}
-                      </td>
-                      <td className="p-3.5">
-                        <span className="px-2 py-0.5 rounded-full text-xs font-semibold bg-emerald-100 dark:bg-emerald-900/40 text-emerald-700 dark:text-emerald-300">
-                          {m.status || 'Active'}
-                        </span>
-                      </td>
-                      <td className="p-3.5 text-right">
-                        <button
-                          onClick={() => setSelectedModel(m)}
-                          className="px-3 py-1 bg-slate-100 hover:bg-slate-200 dark:bg-slate-700 dark:hover:bg-slate-600 text-slate-700 dark:text-slate-200 rounded text-xs font-medium transition"
-                        >
-                          Inspect
-                        </button>
-                      </td>
-                    </tr>
-                  ))}
+                          <span className="text-[11px] text-slate-400 font-mono">{m.model_id} • {m.dataset || 'FactSales'}</span>
+                        </td>
+                        <td className="p-3.5">
+                          <span className="px-2 py-0.5 bg-indigo-50 dark:bg-indigo-900/40 text-indigo-700 dark:text-indigo-300 rounded text-xs font-mono">
+                            {m.model_type || m.algorithm || 'ML Regression'}
+                          </span>
+                        </td>
+                        <td className="p-3.5 font-mono text-xs text-slate-600 dark:text-slate-300">
+                          {Object.keys(params).length > 0 ? (
+                            <div className="max-w-xs truncate text-[11px]">
+                              {Object.entries(params).slice(0, 3).map(([k, v]) => `${k}=${v}`).join(', ')}
+                            </div>
+                          ) : 'Default Tuned'}
+                        </td>
+                        <td className="p-3.5 text-xs font-mono">
+                          {m.metrics ? (
+                            <div className="space-y-0.5">
+                              {Object.entries(m.metrics).slice(0, 2).map(([k, v]) => (
+                                <div key={k} className="flex gap-1.5 text-[11px]">
+                                  <span className="text-slate-400 uppercase">{k}:</span>
+                                  <span className="font-semibold text-slate-800 dark:text-slate-200">
+                                    {typeof v === 'number' ? (k === 'rmse' ? `₹${v.toLocaleString()}` : v.toFixed(3)) : String(v)}
+                                  </span>
+                                </div>
+                              ))}
+                            </div>
+                          ) : 'Trained'}
+                        </td>
+                        <td className="p-3.5 text-xs font-mono text-slate-600 dark:text-slate-300">
+                          {latency.toFixed(2)} ms
+                        </td>
+                        <td className="p-3.5">
+                          <span className={`px-2 py-0.5 rounded-full text-[11px] font-bold ${
+                            isWinner 
+                              ? 'bg-amber-100 dark:bg-amber-900/40 text-amber-800 dark:text-amber-200 border border-amber-300 dark:border-amber-700' 
+                              : 'bg-emerald-100 dark:bg-emerald-900/40 text-emerald-700 dark:text-emerald-300'
+                          }`}>
+                            {isWinner ? '★ WINNER' : (m.status || 'DEPLOYED')}
+                          </span>
+                        </td>
+                        <td className="p-3.5 text-right">
+                          <button
+                            onClick={() => setSelectedModel(m)}
+                            className="px-3 py-1 bg-slate-100 hover:bg-slate-200 dark:bg-slate-700 dark:hover:bg-slate-600 text-slate-700 dark:text-slate-200 rounded-lg text-xs font-semibold transition"
+                          >
+                            Inspect
+                          </button>
+                        </td>
+                      </tr>
+                    );
+                  })}
                 </tbody>
               </table>
             </div>

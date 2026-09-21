@@ -1,8 +1,8 @@
 import React, { useContext } from 'react';
 import { AuthContext } from '../context/AuthContext';
-import { User, LogOut, Bell, Search, ShieldAlert } from 'lucide-react';
+import { User, LogOut, Bell, Search, Menu, X, ShieldCheck } from 'lucide-react';
 
-export const Header = () => {
+export const Header = ({ onToggleMobileMenu }) => {
   const { user, logout } = useContext(AuthContext);
 
   const getRoleBadgeColor = (role) => {
@@ -18,39 +18,47 @@ export const Header = () => {
   };
 
   return (
-    <header className="h-16 bg-white border-b border-slate-200 px-6 flex items-center justify-between sticky top-0 z-10 shadow-sm">
-      {/* Search Input */}
-      <div className="flex items-center gap-3 w-72">
-        <div className="relative w-full">
-          <Search size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
+    <header className="h-16 bg-white border-b border-slate-200 px-3 sm:px-6 flex items-center justify-between sticky top-0 z-10 shadow-sm">
+      {/* Mobile Hamburger & Search Input */}
+      <div className="flex items-center gap-2 sm:gap-3 flex-1 sm:flex-initial">
+        <button
+          onClick={onToggleMobileMenu}
+          className="md:hidden p-2 text-slate-600 hover:text-slate-900 hover:bg-slate-100 rounded-lg transition"
+          aria-label="Toggle navigation menu"
+        >
+          <Menu size={20} />
+        </button>
+
+        <div className="relative w-full sm:w-64 md:w-72">
+          <Search size={15} className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
           <input
             type="text"
-            placeholder="Search metrics, reports, KPIs..."
+            placeholder="Search metrics, reports..."
             className="w-full pl-9 pr-3 py-1.5 bg-slate-50 border border-slate-200 rounded-lg text-xs focus:outline-none focus:ring-2 focus:ring-blue-500 focus:bg-white transition-all"
           />
         </div>
       </div>
 
       {/* User Actions */}
-      <div className="flex items-center gap-4">
-        {/* System Health */}
-        <div className="hidden sm:flex items-center gap-2 text-xs text-emerald-700 bg-emerald-50 px-2.5 py-1 rounded-full border border-emerald-200">
+      <div className="flex items-center gap-2 sm:gap-4 ml-2">
+        {/* System Health Badge */}
+        <div className="hidden lg:flex items-center gap-1.5 text-xs text-emerald-700 bg-emerald-50 px-2.5 py-1 rounded-full border border-emerald-200">
           <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
-          <span className="font-medium">ETL Pipeline Online</span>
+          <span className="font-semibold text-[11px]">ETL Pipeline Online</span>
         </div>
 
         <button className="p-2 text-slate-500 hover:text-slate-700 hover:bg-slate-100 rounded-lg transition-colors relative">
-          <Bell size={18} />
+          <Bell size={17} />
           <span className="absolute top-1.5 right-1.5 w-2 h-2 bg-blue-600 rounded-full"></span>
         </button>
 
-        <div className="h-6 w-[1px] bg-slate-200"></div>
+        <div className="h-5 w-[1px] bg-slate-200"></div>
 
         {/* User Account */}
-        <div className="flex items-center gap-3">
-          <div className="text-right">
-            <div className="text-xs font-semibold text-slate-800">{user?.full_name || 'Executive User'}</div>
-            <span className={`inline-block text-[10px] px-2 py-0.5 rounded border font-medium ${getRoleBadgeColor(user?.role)}`}>
+        <div className="flex items-center gap-2 sm:gap-3">
+          <div className="text-right hidden sm:block">
+            <div className="text-xs font-bold text-slate-800 truncate max-w-[120px]">{user?.full_name || 'Executive User'}</div>
+            <span className={`inline-block text-[9px] px-1.5 py-0.2 rounded border font-semibold ${getRoleBadgeColor(user?.role)}`}>
               {user?.role || 'Executive'}
             </span>
           </div>
@@ -58,12 +66,14 @@ export const Header = () => {
           <button
             onClick={logout}
             title="Log Out"
-            className="p-2 text-slate-400 hover:text-rose-600 hover:bg-rose-50 rounded-lg transition-colors"
+            className="p-1.5 sm:p-2 text-slate-400 hover:text-rose-600 hover:bg-rose-50 rounded-lg transition-colors"
           >
-            <LogOut size={18} />
+            <LogOut size={17} />
           </button>
         </div>
       </div>
     </header>
   );
 };
+
+export default Header;

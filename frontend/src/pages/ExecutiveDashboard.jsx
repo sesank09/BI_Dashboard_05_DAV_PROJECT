@@ -12,6 +12,8 @@ import {
   BarChart, Bar, Legend, PieChart as RePie, Pie, Cell 
 } from 'recharts';
 
+import { downloadReport } from '../services/exportService';
+
 const COLORS = ['#123A6D', '#2563EB', '#0D9488', '#F59E0B', '#8B5CF6'];
 
 export const ExecutiveDashboard = () => {
@@ -19,6 +21,7 @@ export const ExecutiveDashboard = () => {
   const [data, setData] = useState(null);
   const [reliabilityScore, setReliabilityScore] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [downloading, setDownloading] = useState(false);
   const [error, setError] = useState(null);
 
   const fetchDashboardData = async () => {
@@ -125,13 +128,18 @@ export const ExecutiveDashboard = () => {
             <ArrowRight size={14} className="ml-1 opacity-70" />
           </NavLink>
 
-          <a
-            href="/api/export/excel?dataset=sales"
-            download
-            className="flex items-center gap-1.5 px-4 py-2 bg-white/10 hover:bg-white/20 border border-white/10 rounded-xl text-xs font-semibold text-white backdrop-blur transition shadow-sm"
+          <button
+            onClick={async () => {
+              setDownloading(true);
+              await downloadReport('excel', 'sales');
+              setDownloading(false);
+            }}
+            disabled={downloading}
+            className="flex items-center gap-1.5 px-4 py-2 bg-white/10 hover:bg-white/20 border border-white/10 rounded-xl text-xs font-semibold text-white backdrop-blur transition shadow-sm disabled:opacity-50"
           >
-            <Download size={14} /> Export Report (Excel)
-          </a>
+            {downloading ? <RefreshCw size={14} className="animate-spin" /> : <Download size={14} />}
+            {downloading ? 'Exporting...' : 'Export Report (Excel)'}
+          </button>
         </div>
       </div>
 

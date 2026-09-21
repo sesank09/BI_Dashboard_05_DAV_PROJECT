@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import api from '../services/api';
 import { 
   BookOpen, Layers, CheckCircle2, Award, Download, 
   Play, RefreshCw, ChevronRight, Activity, Zap, Shield, ArrowRight
@@ -15,11 +16,10 @@ export const ResearchOverviewPage = () => {
   const fetchExperiments = async () => {
     setLoading(true);
     try {
-      const res = await fetch('/api/experiments/results');
-      if (res.ok) {
-        const data = await res.json();
-        setExperimentData(data);
-        setAblationData(data.ablation_study || []);
+      const res = await api.get('/experiments/results');
+      if (res.data) {
+        setExperimentData(res.data);
+        setAblationData(res.data.ablation_study || []);
       }
     } catch (err) {
       console.error('Failed to load experiment results:', err);
@@ -31,11 +31,10 @@ export const ResearchOverviewPage = () => {
   const handleRunSuite = async () => {
     setLoading(true);
     try {
-      const res = await fetch('/api/experiments/run', { method: 'POST' });
-      if (res.ok) {
-        const data = await res.json();
-        setExperimentData(data);
-        setAblationData(data.ablation_study || []);
+      const res = await api.post('/experiments/run');
+      if (res.data) {
+        setExperimentData(res.data);
+        setAblationData(res.data.ablation_study || []);
       }
     } catch (err) {
       console.error('Failed to run experiment suite:', err);

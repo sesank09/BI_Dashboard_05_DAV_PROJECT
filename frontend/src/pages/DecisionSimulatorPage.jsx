@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import api from '../services/api';
 import { 
   Sliders, Play, RotateCcw, TrendingUp, TrendingDown, DollarSign,
   Users, Percent, ShieldCheck, AlertCircle, Sparkles, CheckCircle2, ArrowRight
@@ -23,21 +24,19 @@ export const DecisionSimulatorPage = () => {
     setLoading(true);
     try {
       const payload = {
+        marketing_spend_delta_pct: params.marketingDelta ?? marketingDelta,
+        headcount_delta_pct: params.headcountDelta ?? headcountDelta,
+        opex_reduction_pct: params.opexDelta ?? opexDelta,
+        discount_delta_pct: params.discountDelta ?? discountDelta,
         marketing_spend_delta: params.marketingDelta ?? marketingDelta,
         headcount_delta: params.headcountDelta ?? headcountDelta,
         opex_delta: params.opexDelta ?? opexDelta,
-        discount_delta: params.discountDelta ?? discountDelta
+        discount_delta: params.discountDelta ?? discountDelta,
       };
 
-      const res = await fetch('/api/simulation', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(payload)
-      });
-
-      if (res.ok) {
-        const data = await res.json();
-        setSimulationResult(data);
+      const res = await api.post('/simulation', payload);
+      if (res.data) {
+        setSimulationResult(res.data);
       }
     } catch (err) {
       console.error('Simulation error:', err);
@@ -98,52 +97,57 @@ export const DecisionSimulatorPage = () => {
 
   const comparisonChartData = [
     {
-      name: 'Revenue (₹)',
-      Observed: base.revenue || 12000000,
-      Simulated: sim.revenue || 13500000
+      metric: 'Revenue (₹)',
+      Current: base.revenue || 0,
+      Simulated: sim.simulated_revenue || 0,
     },
     {
-      name: 'Net Profit (₹)',
-      Observed: base.profit || 2400000,
-      Simulated: sim.profit || 2850000
+      metric: 'Net Profit (₹)',
+      Current: base.net_profit || 0,
+      Simulated: sim.simulated_net_profit || 0,
     },
     {
-      name: 'Marketing Spend (₹)',
-      Observed: base.marketing_spend || 1500000,
-      Simulated: sim.marketing_spend || 1725000
-    }
+      metric: 'OPEX (₹)',
+      Current: base.opex || 0,
+      Simulated: sim.simulated_opex || 0,
+    },
+    {
+      metric: 'Marketing (₹)',
+      Current: base.marketing_spend || 0,
+      Simulated: sim.simulated_marketing_spend || 0,
+    },
   ];
 
   return (
     <div className="space-y-6 pb-12">
-      {/* Header */}
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 bg-gradient-to-r from-slate-900 via-teal-950 to-slate-900 p-6 rounded-2xl border border-teal-500/20 shadow-xl text-white">
+      {/* Header Banner */}
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 bg-gradient-to-r from-slate-900 via-teal-950 to-slate-900 p-4 sm:p-6 rounded-2xl border border-teal-500/20 shadow-xl text-white">
         <div>
           <div className="flex items-center gap-2 mb-1">
             <span className="px-2.5 py-0.5 rounded-full text-xs font-semibold bg-teal-500/20 text-teal-300 border border-teal-500/30">
-              ACDIE Decision Intelligence Engine
+              ACDIE Decision Intelligence Subsystem
             </span>
-            <span className="px-2.5 py-0.5 rounded-full text-xs font-semibold bg-indigo-500/20 text-indigo-300 border border-indigo-500/30 flex items-center gap-1">
-              <Sparkles size={12} /> Multi-Variable Regression
+            <span className="px-2.5 py-0.5 rounded-full text-xs font-semibold bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 flex items-center gap-1">
+              <CheckCircle2 size={12} /> 95% Confidence Bounds Active
             </span>
           </div>
-          <h1 className="text-2xl font-bold text-white tracking-tight">Interactive What-If Decision Simulator</h1>
-          <p className="text-sm text-slate-300">
+          <h1 className="text-xl sm:text-2xl font-bold text-white tracking-tight">Interactive What-If Decision Simulator</h1>
+          <p className="text-xs sm:text-sm text-slate-300">
             Model the cross-departmental financial and operational ripple effects of executive decisions with 95% confidence bounds.
           </p>
         </div>
         <div className="flex items-center gap-3">
           <button
             onClick={handleReset}
-            className="flex items-center gap-2 px-4 py-2 bg-slate-800 hover:bg-slate-700 text-slate-200 rounded-xl text-sm font-medium border border-slate-700 transition"
+            className="flex items-center gap-2 px-3 sm:px-4 py-2 bg-slate-800 hover:bg-slate-700 text-slate-200 rounded-xl text-xs sm:text-sm font-medium border border-slate-700 transition"
           >
-            <RotateCcw size={16} /> Reset Sliders
+            <RotateCcw size={15} /> Reset Sliders
           </button>
           <button
             onClick={() => fetchSimulation()}
-            className="flex items-center gap-2 px-5 py-2 bg-teal-600 hover:bg-teal-500 text-white rounded-xl text-sm font-semibold transition shadow-lg shadow-teal-600/30"
+            className="flex items-center gap-2 px-4 sm:px-5 py-2 bg-teal-600 hover:bg-teal-500 text-white rounded-xl text-xs sm:text-sm font-semibold transition shadow-lg shadow-teal-600/30"
           >
-            <Play size={16} className={loading ? 'animate-spin' : ''} /> Execute Simulation
+            <Play size={15} className={loading ? 'animate-spin' : ''} /> Execute Simulation
           </button>
         </div>
       </div>
@@ -263,8 +267,8 @@ export const DecisionSimulatorPage = () => {
               <input
                 type="range"
                 min="-30"
-                max="50"
-                step="5"
+                max="30"
+                step="2"
                 value={opexDelta}
                 onChange={(e) => {
                   const val = Number(e.target.value);
@@ -274,9 +278,9 @@ export const DecisionSimulatorPage = () => {
                 className="w-full accent-teal-600 cursor-pointer"
               />
               <div className="flex justify-between text-[10px] text-slate-400">
-                <span>-30%</span>
+                <span>-30% (Cut)</span>
                 <span>0%</span>
-                <span>+50%</span>
+                <span>+30% (Expand)</span>
               </div>
             </div>
 
@@ -284,16 +288,16 @@ export const DecisionSimulatorPage = () => {
             <div className="space-y-2">
               <div className="flex justify-between text-xs font-medium">
                 <span className="text-slate-600 dark:text-slate-300 flex items-center gap-1.5">
-                  <Percent size={14} className="text-purple-500" /> Avg Discount Rate Delta
+                  <Percent size={14} className="text-purple-500" /> Promotional Discount Delta
                 </span>
-                <span className={`font-bold font-mono ${discountDelta > 0 ? 'text-purple-600' : discountDelta < 0 ? 'text-blue-500' : 'text-slate-500'}`}>
+                <span className={`font-bold font-mono ${discountDelta > 0 ? 'text-purple-600' : discountDelta < 0 ? 'text-slate-600' : 'text-slate-500'}`}>
                   {discountDelta > 0 ? `+${discountDelta}%` : `${discountDelta}%`}
                 </span>
               </div>
               <input
                 type="range"
                 min="-10"
-                max="20"
+                max="25"
                 step="1"
                 value={discountDelta}
                 onChange={(e) => {
@@ -305,136 +309,105 @@ export const DecisionSimulatorPage = () => {
               />
               <div className="flex justify-between text-[10px] text-slate-400">
                 <span>-10%</span>
-                <span>0%</span>
-                <span>+20%</span>
+                <span>0% (Standard)</span>
+                <span>+25%</span>
               </div>
             </div>
 
-          </div>
-
-          {/* Model Rationale Box */}
-          <div className="bg-slate-900 text-white p-4 rounded-xl border border-slate-700 text-xs space-y-2">
-            <span className="font-semibold text-teal-400 flex items-center gap-1.5">
-              <ShieldCheck size={14} /> Mathematical Model Formula
-            </span>
-            <p className="text-slate-300 font-mono text-[11px] leading-relaxed">
-              {simulationResult?.formula_explanation || 
-                'Revenue_sim = Baseline_Rev * (1 + 0.38*ΔMktg + 0.42*ΔHC - 0.15*ΔDisc) ± 1.96*σ_residual'}
-            </p>
           </div>
         </div>
 
-        {/* Right Column: Simulated Outcomes & Comparison */}
+        {/* Right Column: Simulated Impact Summary & Charts */}
         <div className="lg:col-span-8 space-y-6">
           
-          {/* Key KPI Impact Cards (Observed vs Simulated) */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          {/* Simulated Impact KPI Cards */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
             
-            {/* KPI 1: Revenue */}
-            <div className="bg-white dark:bg-slate-800 p-5 rounded-2xl border border-slate-200 dark:border-slate-700 shadow-sm space-y-3">
-              <div className="flex justify-between items-start">
-                <div>
-                  <span className="text-xs text-slate-400 uppercase font-semibold">Simulated Annual Revenue</span>
-                  <p className="text-2xl font-bold text-slate-900 dark:text-white mt-0.5">
-                    {formatINR(sim.revenue || 13500000)}
-                  </p>
-                </div>
-                <div className="text-right">
-                  <span className="text-[10px] text-slate-400 block uppercase">Delta vs Baseline</span>
-                  {formatDelta(deltas.revenue_pct, true)}
-                </div>
+            {/* Revenue */}
+            <div className="bg-white dark:bg-slate-800 p-4 sm:p-5 rounded-2xl border border-slate-200 dark:border-slate-700 shadow-sm space-y-2">
+              <span className="text-xs text-slate-500 uppercase font-semibold">Simulated Revenue</span>
+              <div className="text-xl sm:text-2xl font-bold text-slate-900 dark:text-white">
+                {formatINR(sim.simulated_revenue)}
               </div>
-              <div className="pt-2 border-t border-slate-100 dark:border-slate-700 flex justify-between text-xs text-slate-500 font-mono">
-                <span>Observed: {formatINR(base.revenue || 12000000)}</span>
-                <span className="text-indigo-600 dark:text-indigo-400 font-semibold">
-                  95% CI: [{formatINR(ci.revenue_lower || sim.revenue * 0.94)} - {formatINR(ci.revenue_upper || sim.revenue * 1.06)}]
-                </span>
+              <div className="flex items-center justify-between pt-2 border-t border-slate-100 dark:border-slate-700">
+                <span className="text-[11px] text-slate-400">Baseline: {formatINR(base.revenue)}</span>
+                {formatDelta(deltas.revenue_pct)}
+              </div>
+              <div className="text-[10px] text-slate-400 font-mono">
+                95% CI: [{formatINR(ci.revenue?.lower)} – {formatINR(ci.revenue?.upper)}]
               </div>
             </div>
 
-            {/* KPI 2: Net Profit */}
-            <div className="bg-white dark:bg-slate-800 p-5 rounded-2xl border border-slate-200 dark:border-slate-700 shadow-sm space-y-3">
-              <div className="flex justify-between items-start">
-                <div>
-                  <span className="text-xs text-slate-400 uppercase font-semibold">Simulated Net Profit</span>
-                  <p className="text-2xl font-bold text-emerald-600 dark:text-emerald-400 mt-0.5">
-                    {formatINR(sim.profit || 2850000)}
-                  </p>
-                </div>
-                <div className="text-right">
-                  <span className="text-[10px] text-slate-400 block uppercase">Delta vs Baseline</span>
-                  {formatDelta(deltas.profit_pct, true)}
-                </div>
+            {/* Net Profit */}
+            <div className="bg-white dark:bg-slate-800 p-4 sm:p-5 rounded-2xl border border-slate-200 dark:border-slate-700 shadow-sm space-y-2">
+              <span className="text-xs text-slate-500 uppercase font-semibold">Simulated Net Profit</span>
+              <div className="text-xl sm:text-2xl font-bold text-slate-900 dark:text-white">
+                {formatINR(sim.simulated_net_profit)}
               </div>
-              <div className="pt-2 border-t border-slate-100 dark:border-slate-700 flex justify-between text-xs text-slate-500 font-mono">
-                <span>Observed: {formatINR(base.profit || 2400000)}</span>
-                <span className="text-emerald-600 dark:text-emerald-400 font-semibold">
-                  Margin: {((sim.profit / (sim.revenue || 1)) * 100).toFixed(1)}%
-                </span>
+              <div className="flex items-center justify-between pt-2 border-t border-slate-100 dark:border-slate-700">
+                <span className="text-[11px] text-slate-400">Baseline: {formatINR(base.net_profit)}</span>
+                {formatDelta(deltas.net_profit_pct)}
+              </div>
+              <div className="text-[10px] text-slate-400 font-mono">
+                Margin: {((sim.simulated_net_profit / (sim.simulated_revenue || 1)) * 100).toFixed(1)}%
               </div>
             </div>
 
-            {/* KPI 3: Customer Acquisition Cost (CAC) */}
-            <div className="bg-white dark:bg-slate-800 p-5 rounded-2xl border border-slate-200 dark:border-slate-700 shadow-sm space-y-3">
-              <div className="flex justify-between items-start">
-                <div>
-                  <span className="text-xs text-slate-400 uppercase font-semibold">Simulated CAC</span>
-                  <p className="text-2xl font-bold text-slate-900 dark:text-white mt-0.5">
-                    {formatINR(sim.cac || 4200)}
-                  </p>
-                </div>
-                <div className="text-right">
-                  <span className="text-[10px] text-slate-400 block uppercase">Delta vs Baseline</span>
-                  {formatDelta(deltas.cac_pct, false)}
-                </div>
+            {/* Customer Acquisition Cost */}
+            <div className="bg-white dark:bg-slate-800 p-4 sm:p-5 rounded-2xl border border-slate-200 dark:border-slate-700 shadow-sm space-y-2">
+              <span className="text-xs text-slate-500 uppercase font-semibold">Simulated CAC</span>
+              <div className="text-xl sm:text-2xl font-bold text-slate-900 dark:text-white">
+                {formatINR(sim.simulated_cac)}
               </div>
-              <div className="pt-2 border-t border-slate-100 dark:border-slate-700 flex justify-between text-xs text-slate-500 font-mono">
-                <span>Observed: {formatINR(base.cac || 4000)}</span>
-                <span className="text-slate-400">Target: &lt; ₹4,500</span>
+              <div className="flex items-center justify-between pt-2 border-t border-slate-100 dark:border-slate-700">
+                <span className="text-[11px] text-slate-400">Baseline: {formatINR(base.cac)}</span>
+                {formatDelta(deltas.cac_pct, false)}
+              </div>
+              <div className="text-[10px] text-slate-400 font-mono">
+                Acq: {sim.simulated_customers_acquired?.toLocaleString() || 0} clients
               </div>
             </div>
 
-            {/* KPI 4: Operations SLA Fulfilment */}
-            <div className="bg-white dark:bg-slate-800 p-5 rounded-2xl border border-slate-200 dark:border-slate-700 shadow-sm space-y-3">
-              <div className="flex justify-between items-start">
-                <div>
-                  <span className="text-xs text-slate-400 uppercase font-semibold">Operational SLA Rate</span>
-                  <p className="text-2xl font-bold text-slate-900 dark:text-white mt-0.5">
-                    {(sim.delivery_sla || 94.8).toFixed(1)}%
-                  </p>
-                </div>
-                <div className="text-right">
-                  <span className="text-[10px] text-slate-400 block uppercase">Delta vs Baseline</span>
-                  {formatDelta(deltas.sla_delta, true)}
-                </div>
+            {/* Total OPEX */}
+            <div className="bg-white dark:bg-slate-800 p-4 sm:p-5 rounded-2xl border border-slate-200 dark:border-slate-700 shadow-sm space-y-2">
+              <span className="text-xs text-slate-500 uppercase font-semibold">Simulated OPEX</span>
+              <div className="text-xl sm:text-2xl font-bold text-slate-900 dark:text-white">
+                {formatINR(sim.simulated_opex)}
               </div>
-              <div className="pt-2 border-t border-slate-100 dark:border-slate-700 flex justify-between text-xs text-slate-500 font-mono">
-                <span>Observed: {(base.delivery_sla || 94.5).toFixed(1)}%</span>
-                <span className="text-emerald-600 font-semibold">On-Time Target Met</span>
+              <div className="flex items-center justify-between pt-2 border-t border-slate-100 dark:border-slate-700">
+                <span className="text-[11px] text-slate-400">Baseline: {formatINR(base.opex)}</span>
+                {formatDelta(deltas.opex_pct, false)}
+              </div>
+              <div className="text-[10px] text-slate-400 font-mono">
+                Marketing: {formatINR(sim.simulated_marketing_spend)}
               </div>
             </div>
 
           </div>
 
-          {/* Side-by-Side Comparison Chart */}
-          <div className="bg-white dark:bg-slate-800 p-6 rounded-2xl border border-slate-200 dark:border-slate-700 shadow-sm space-y-4">
-            <div className="flex items-center justify-between">
+          {/* Baseline vs Simulated Comparison Bar Chart */}
+          <div className="bg-white dark:bg-slate-800 p-5 rounded-2xl border border-slate-200 dark:border-slate-700 shadow-sm space-y-4">
+            <div className="flex justify-between items-center">
               <div>
-                <h3 className="font-bold text-slate-900 dark:text-white text-base">Observed vs Simulated Financial Comparison</h3>
-                <p className="text-xs text-slate-500">Real-time comparison between historical ground-truth and simulated scenario outcome.</p>
+                <h3 className="font-bold text-slate-900 dark:text-white text-sm sm:text-base">
+                  Baseline vs. Simulated Outcome Comparison (₹ INR)
+                </h3>
+                <p className="text-xs text-slate-500">
+                  Direct visual comparison of financial totals under current vs. hypothetical decision conditions.
+                </p>
               </div>
             </div>
 
-            <div className="h-64 w-full">
+            <div className="h-64 sm:h-72">
               <ResponsiveContainer width="100%" height="100%">
                 <BarChart data={comparisonChartData}>
                   <CartesianGrid strokeDasharray="3 3" opacity={0.15} />
-                  <XAxis dataKey="name" tick={{ fontSize: 11 }} />
-                  <YAxis tickFormatter={(val) => `₹${(val / 100000).toFixed(0)}L`} tick={{ fontSize: 11 }} />
+                  <XAxis dataKey="metric" tick={{ fontSize: 11 }} />
+                  <YAxis tick={{ fontSize: 11 }} tickFormatter={(v) => `₹${(v / 100000).toFixed(0)}L`} />
                   <Tooltip formatter={(val) => formatINR(val)} />
-                  <Legend />
-                  <Bar dataKey="Observed" fill="#64748b" name="Observed Ground Truth (₹)" radius={[4, 4, 0, 0]} />
-                  <Bar dataKey="Simulated" fill="#0d9488" name="Simulated Outcome (₹)" radius={[4, 4, 0, 0]} />
+                  <Legend wrapperStyle={{ fontSize: '12px' }} />
+                  <Bar dataKey="Current" name="Historical Baseline (₹)" fill="#94A3B8" radius={[4, 4, 0, 0]} />
+                  <Bar dataKey="Simulated" name="Simulated Scenario (₹)" fill="#0D9488" radius={[4, 4, 0, 0]} />
                 </BarChart>
               </ResponsiveContainer>
             </div>

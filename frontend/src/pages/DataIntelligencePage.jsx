@@ -15,6 +15,7 @@ export const DataIntelligencePage = () => {
   const [loading, setLoading] = useState(true);
   const [uploading, setUploading] = useState(false);
   const [uploadSuccess, setUploadSuccess] = useState(null);
+  const [uploadError, setUploadError] = useState(null);
 
   const fetchAllDataIntelligence = async () => {
     setLoading(true);
@@ -57,7 +58,8 @@ export const DataIntelligencePage = () => {
       setUploadSuccess(`Successfully ingested ${file.name} (${res.data.rows} rows, ${res.data.columns} columns) and triggered warehouse ETL.`);
       fetchAllDataIntelligence();
     } catch (err) {
-      alert(`Upload failed: ${err.message}`);
+      console.error('Upload failed', err);
+      setUploadError(err.response?.data?.detail || err.message || 'File upload failed. Please ensure file is a valid CSV.');
     } finally {
       setUploading(false);
     }
@@ -286,9 +288,22 @@ export const DataIntelligencePage = () => {
             </div>
 
             {uploadSuccess && (
-              <div className="p-3 bg-emerald-50 border border-emerald-200 text-emerald-800 rounded-lg text-xs flex items-center gap-2">
-                <CheckCircle2 size={16} />
-                <span>{uploadSuccess}</span>
+              <div className="p-3.5 bg-emerald-50 border border-emerald-200 text-emerald-800 rounded-xl text-xs flex items-center justify-between gap-2">
+                <div className="flex items-center gap-2">
+                  <CheckCircle2 size={16} className="text-emerald-600 shrink-0" />
+                  <span>{uploadSuccess}</span>
+                </div>
+                <button onClick={() => setUploadSuccess(null)} className="text-emerald-600 font-bold text-xs">✕</button>
+              </div>
+            )}
+
+            {uploadError && (
+              <div className="p-3.5 bg-rose-50 border border-rose-200 text-rose-800 rounded-xl text-xs flex items-center justify-between gap-2">
+                <div className="flex items-center gap-2">
+                  <AlertTriangle size={16} className="text-rose-600 shrink-0" />
+                  <span>{uploadError}</span>
+                </div>
+                <button onClick={() => setUploadError(null)} className="text-rose-600 font-bold text-xs">✕</button>
               </div>
             )}
 

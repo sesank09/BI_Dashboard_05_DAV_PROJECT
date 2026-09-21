@@ -3,23 +3,9 @@ import { Routes, Route, Navigate } from 'react-router-dom';
 import { DashboardLayout } from './layouts/DashboardLayout';
 import { LoginPage } from './pages/LoginPage';
 import { ExecutiveDashboard } from './pages/ExecutiveDashboard';
-import { DataIntelligencePage } from './pages/DataIntelligencePage';
-import { CrossFunctionalPage } from './pages/CrossFunctionalPage';
-import { MLIntelligencePage } from './pages/MLIntelligencePage';
-import { DecisionSimulatorPage } from './pages/DecisionSimulatorPage';
-import { ResearchOverviewPage } from './pages/ResearchOverviewPage';
-import { SalesDashboard } from './pages/SalesDashboard';
-import { FinanceDashboard } from './pages/FinanceDashboard';
-import { MarketingDashboard } from './pages/MarketingDashboard';
-import { HRDashboard } from './pages/HRDashboard';
-import { OperationsDashboard } from './pages/OperationsDashboard';
-import { AnalyticsPage } from './pages/AnalyticsPage';
-import { CustomerSegmentationPage } from './pages/CustomerSegmentationPage';
-import { DataManagementPage } from './pages/DataManagementPage';
-import { ETLMonitorPage } from './pages/ETLMonitorPage';
-import { DataQualityPage } from './pages/DataQualityPage';
-import { InsightsPage } from './pages/InsightsPage';
-import { ReportsPage } from './pages/ReportsPage';
+import { DepartmentHub } from './pages/DepartmentHub';
+import { IntelligenceHub } from './pages/IntelligenceHub';
+import { DataStudioHub } from './pages/DataStudioHub';
 import { SettingsPage } from './pages/SettingsPage';
 
 export const App = () => {
@@ -27,35 +13,40 @@ export const App = () => {
     <Routes>
       <Route path="/login" element={<LoginPage />} />
       <Route path="/" element={<DashboardLayout />}>
-        {/* Core & Executive */}
+        {/* Core Executive Hub */}
         <Route index element={<ExecutiveDashboard />} />
-        
-        {/* ACDIE Intelligence Suite */}
-        <Route path="data-intelligence" element={<DataIntelligencePage />} />
-        <Route path="cross-functional" element={<CrossFunctionalPage />} />
-        <Route path="ml-intelligence" element={<MLIntelligencePage />} />
-        <Route path="simulation" element={<DecisionSimulatorPage />} />
-        <Route path="research" element={<ResearchOverviewPage />} />
-        
-        {/* Departmental Analytics */}
-        <Route path="sales" element={<SalesDashboard />} />
-        <Route path="finance" element={<FinanceDashboard />} />
-        <Route path="marketing" element={<MarketingDashboard />} />
-        <Route path="hr" element={<HRDashboard />} />
-        <Route path="operations" element={<OperationsDashboard />} />
-        
-        {/* Advanced EDA & ML */}
-        <Route path="analytics" element={<AnalyticsPage />} />
-        <Route path="customers" element={<CustomerSegmentationPage />} />
-        <Route path="insights" element={<InsightsPage />} />
-        
-        {/* Operations & Governance */}
-        <Route path="data-management" element={<DataManagementPage />} />
-        <Route path="etl-monitor" element={<ETLMonitorPage />} />
-        <Route path="data-quality" element={<DataQualityPage />} />
-        <Route path="reports" element={<ReportsPage />} />
+
+        {/* Unified Department Analytics Hub & Sub-routes */}
+        <Route path="departments" element={<DepartmentHub />} />
+        <Route path="sales" element={<DepartmentHub defaultTab="sales" />} />
+        <Route path="finance" element={<DepartmentHub defaultTab="finance" />} />
+        <Route path="marketing" element={<DepartmentHub defaultTab="marketing" />} />
+        <Route path="hr" element={<DepartmentHub defaultTab="hr" />} />
+        <Route path="operations" element={<DepartmentHub defaultTab="operations" />} />
+        <Route path="customers" element={<DepartmentHub defaultTab="customers" />} />
+
+        {/* Unified AI & Decision Intelligence Suite & Sub-routes */}
+        <Route path="intelligence" element={<IntelligenceHub />} />
+        <Route path="ml-intelligence" element={<IntelligenceHub defaultTab="ml-intelligence" />} />
+        <Route path="simulation" element={<IntelligenceHub defaultTab="simulation" />} />
+        <Route path="cross-functional" element={<IntelligenceHub defaultTab="cross-functional" />} />
+        <Route path="insights" element={<IntelligenceHub defaultTab="insights" />} />
+        <Route path="research" element={<IntelligenceHub defaultTab="research" />} />
+
+        {/* Unified Data Studio, Ingestion & Warehouse Hub & Sub-routes */}
+        <Route path="data" element={<DataStudioHub />} />
+        <Route path="data-management" element={<DataStudioHub defaultTab="data-management" />} />
+        <Route path="data-intelligence" element={<DataStudioHub defaultTab="data-intelligence" />} />
+        <Route path="data-quality" element={<DataStudioHub defaultTab="data-intelligence" />} />
+        <Route path="etl-monitor" element={<DataStudioHub defaultTab="etl-monitor" />} />
+        <Route path="analytics" element={<DataStudioHub defaultTab="analytics" />} />
+        <Route path="reports" element={<DataStudioHub defaultTab="reports" />} />
+
+        {/* System Settings & Diagnostics */}
         <Route path="settings" element={<SettingsPage />} />
       </Route>
+
+      {/* Wildcard Fallback */}
       <Route path="*" element={<Navigate to="/" replace />} />
     </Routes>
   );
