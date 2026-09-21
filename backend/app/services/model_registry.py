@@ -280,20 +280,28 @@ class ModelRegistry:
         execution_time_ms: float,
         description: str = ""
     ) -> Dict[str, Any]:
+        registered_time = datetime.datetime.utcnow().strftime("%Y-%m-%d %H:%M:%S UTC")
         record = {
             "model_id": model_id,
             "model_name": model_name,
             "model_type": model_type,
+            "algorithm": model_type,
+            "task": f"Forecasting & Optimization ({target})",
             "dataset": dataset,
             "features": features,
             "target": target,
+            "target_variable": target,
             "training_rows": train_rows,
             "testing_rows": test_rows,
+            "training_samples": f"{train_rows:,} train / {test_rows:,} test",
             "parameters": parameters,
+            "hyperparameters": parameters,
             "metrics": metrics,
             "execution_time_ms": round(execution_time_ms, 2),
+            "inference_latency_ms": round(execution_time_ms, 2),
             "status": "DEPLOYED",
-            "registered_at": datetime.datetime.utcnow().strftime("%Y-%m-%d %H:%M:%S UTC"),
+            "registered_at": registered_time,
+            "trained_at": registered_time,
             "description": description
         }
         self._models[model_id] = record
