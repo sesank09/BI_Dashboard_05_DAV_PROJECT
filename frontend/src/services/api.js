@@ -1,17 +1,21 @@
 import axios from 'axios';
 
-// Dynamically use relative /api path in production or localhost:8000 in development
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || '/api';
-
+// Ensure all API calls correctly route through the /api proxy prefix
 const api = axios.create({
-  baseURL: API_BASE_URL,
+  baseURL: '',
   headers: {
     'Content-Type': 'application/json',
   },
 });
 
-// Interceptor to attach JWT token
+// Interceptor to ensure /api prefix and attach JWT token
 api.interceptors.request.use((config) => {
+  if (config.url && !config.url.startsWith('http')) {
+    if (!config.url.startsWith('/api') && !config.url.startsWith('api')) {
+      const cleanUrl = config.url.startsWith('/') ? config.url : `/${config.url}`;
+      config.url = `/api${cleanUrl}`;
+    }
+  }
   const token = localStorage.getItem('token');
   if (token) {
     config.headers.Authorization = `Bearer ${token}`;

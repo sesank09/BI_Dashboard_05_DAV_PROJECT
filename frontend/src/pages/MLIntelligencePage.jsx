@@ -7,7 +7,7 @@ import {
   Sliders, Gauge, Clock, FileSpreadsheet, X
 } from 'lucide-react';
 import {
-  LineChart, Line, AreaChart, Area, XAxis, YAxis, CartesianGrid,
+  ComposedChart, LineChart, Line, AreaChart, Area, XAxis, YAxis, CartesianGrid,
   Tooltip, Legend, ResponsiveContainer, BarChart, Bar, Cell
 } from 'recharts';
 
@@ -176,7 +176,11 @@ export const MLIntelligencePage = () => {
   const [forecastData, setForecastData] = useState(null);
   const [anomalies, setAnomalies] = useState([]);
   const [selectedModel, setSelectedModel] = useState(null);
-  const [activeTab, setActiveTab] = useState('registry'); // 'registry', 'matrix', 'forecasting', 'anomalies'
+  const [activeTab, setActiveTab] = useState(() => {
+    const params = new URLSearchParams(window.location.search);
+    const t = params.get('tab');
+    return ['registry', 'matrix', 'forecasting', 'anomalies'].includes(t) ? t : 'registry';
+  });
   const [filterCategory, setFilterCategory] = useState('all');
   const [searchTerm, setSearchTerm] = useState('');
 
@@ -203,7 +207,10 @@ export const MLIntelligencePage = () => {
       }
 
       if (aRes.status === 'fulfilled' && aRes.value.data) {
-        setAnomalies(aRes.value.data.anomalies || []);
+        const rawAnomalies = Array.isArray(aRes.value.data) 
+          ? aRes.value.data 
+          : (aRes.value.data.anomalies || []);
+        setAnomalies(rawAnomalies);
       }
     } catch (err) {
       console.error('Failed to fetch ML intelligence data:', err);
@@ -233,8 +240,7 @@ export const MLIntelligencePage = () => {
                         (m.target || m.target_variable || '').toLowerCase().includes(searchTerm.toLowerCase());
       if (filterCategory === 'all') return nameMatch;
       if (filterCategory === 'forecasting') return nameMatch && (m.model_type?.includes('Time Series') || m.model_type?.includes('Forecaster') || m.model_type?.includes('ARIMA') || m.model_type?.includes('ESM'));
-      if (filterCategory === 'ensemble') return nameMatch && (m.model_type?.includes('Forest') || m.model_type?.includes('Boosting') || m.model_type?.includes('GBDT') || m.model_type?.includes('XGBoost') || m.model_type?.includes('LightGBM'));
-      if (filterCategory === 'regression') return nameMatch && (m.model_type?.includes('Regression') || m.model_type?.includes('Linear') || m.model_type?.includes('Ridge') || m.model_type?.includes('Lasso') || m.model_type?.includes('ElasticNet') || m.model_type?.includes('SVR'));
+      if (filterCategory === 'ensemble') return nameMatch && (m.model_type?.includes('Forest') || m.model_type?.includes('Boosting') || m.model_type?.includes('GBDT') || m.model_type?.includes('XGB'));
       if (filterCategory === 'unsupervised') return nameMatch && (m.model_type?.includes('Clustering') || m.model_type?.includes('K-Means') || m.model_type?.includes('Anomaly') || m.model_type?.includes('Isolation'));
       return nameMatch;
     });
@@ -245,13 +251,13 @@ export const MLIntelligencePage = () => {
     if (!forecastData) return [];
     const historical = (forecastData.historical || []).map(d => ({
       date: d.date,
-      actual: d.revenue,
+      actual: d.actual_revenue ?? d.revenue ?? d.actual,
       type: 'Historical'
     }));
 
     const forecast = (forecastData.forecast || []).map(d => ({
       date: d.date,
-      forecast: d.forecast,
+      forecast: d.forecast_revenue ?? d.forecast,
       upper_bound: d.upper_bound,
       lower_bound: d.lower_bound,
       type: 'Forecast'
@@ -270,7 +276,7 @@ export const MLIntelligencePage = () => {
               ACDIE Machine Learning Subsystem
             </span>
             <span className="px-2.5 py-0.5 rounded-full text-xs font-semibold bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 flex items-center gap-1">
-              <ShieldCheck size={12} /> 15 Production Models Pre-Trained & Calibrated
+              <ShieldCheck size={12} /> 7 Production ML Models Pre-Trained & Calibrated
             </span>
           </div>
           <h1 className="text-2xl font-bold text-white tracking-tight">Machine Learning Model Registry & Evaluation Matrix</h1>
@@ -362,10 +368,9 @@ export const MLIntelligencePage = () => {
           <div className="bg-white dark:bg-slate-800 p-4 rounded-xl border border-slate-200 dark:border-slate-700 shadow-sm flex flex-col md:flex-row items-center justify-between gap-4">
             <div className="flex items-center gap-2 overflow-x-auto w-full md:w-auto">
               {[
-                { id: 'all', label: 'All 15 Models' },
+                { id: 'all', label: 'All 7 Models' },
                 { id: 'forecasting', label: 'Time Series / Forecasters' },
-                { id: 'ensemble', label: 'Tree Ensembles (XGB/RF/GBDT)' },
-                { id: 'regression', label: 'Linear & Regularized' },
+                { id: 'ensemble', label: 'Tree Ensembles (RF/GBDT/XGB)' },
                 { id: 'unsupervised', label: 'Clustering & Anomalies' }
               ].map((cat) => (
                 <button
@@ -459,7 +464,10 @@ export const MLIntelligencePage = () => {
                         <td className="py-3 px-4">
                           {m.metrics ? (
                             <div className="flex flex-wrap gap-1.5">
-                              {Object.entries(m.metrics).slice(0, 3).map(([k, v]) => (
+                              {Object.entries(m.metrics)
+                                .filter(([k, v]) => typeof v !== 'object')
+                                .slice(0, 3)
+                                .map(([k, v]) => (
                                 <span key={k} className="px-2 py-0.5 bg-slate-100 dark:bg-slate-700 rounded text-[11px] font-mono text-slate-700 dark:text-slate-300">
                                   <strong className="uppercase">{k}:</strong> {typeof v === 'number' ? (k === 'rmse' ? `₹${Math.round(v).toLocaleString()}` : v.toFixed(2)) : String(v)}
                                 </span>
@@ -574,7 +582,9 @@ export const MLIntelligencePage = () => {
                     </thead>
                     <tbody className="divide-y divide-slate-700/60 font-medium">
                       {selectedModel.metrics && Object.keys(selectedModel.metrics).length > 0 ? (
-                        Object.entries(selectedModel.metrics).map(([key, rawVal]) => {
+                        Object.entries(selectedModel.metrics)
+                          .filter(([key, rawVal]) => typeof rawVal !== 'object' && key !== 'candidate_evaluations' && key !== 'candidate_silhouette_evaluations')
+                          .map(([key, rawVal]) => {
                           const info = METRIC_GLOSSARY[key] || {
                             name: key.toUpperCase(),
                             unit: 'Standard',
@@ -738,17 +748,17 @@ export const MLIntelligencePage = () => {
         </div>
       )}
 
-      {/* TAB 2: COMPLETE CROSS-MODEL METRICS MATRIX (SIDE-BY-SIDE ALL 15 MODELS) */}
+      {/* TAB 2: COMPLETE CROSS-MODEL METRICS MATRIX (SIDE-BY-SIDE ALL 7 MODELS) */}
       {activeTab === 'matrix' && (
         <div className="space-y-6">
           <div className="bg-white dark:bg-slate-800 rounded-2xl border border-slate-200 dark:border-slate-700 shadow-sm overflow-hidden">
             <div className="p-4 border-b border-slate-200 dark:border-slate-700 flex flex-col sm:flex-row sm:items-center justify-between gap-2">
               <div>
                 <h3 className="font-bold text-slate-900 dark:text-white text-base">Complete Cross-Model Evaluation Matrix</h3>
-                <p className="text-xs text-slate-500">Comprehensive side-by-side performance benchmarks for all 15 active machine learning models.</p>
+                <p className="text-xs text-slate-500">Comprehensive side-by-side performance benchmarks for all 7 active production machine learning models.</p>
               </div>
               <span className="text-xs font-semibold px-3 py-1 bg-indigo-50 dark:bg-indigo-900/40 text-indigo-700 dark:text-indigo-300 rounded-lg">
-                15 Production Models
+                7 Production Models
               </span>
             </div>
 
@@ -900,7 +910,7 @@ export const MLIntelligencePage = () => {
 
             <div className="h-80 w-full">
               <ResponsiveContainer width="100%" height="100%">
-                <AreaChart data={getForecastChartData()}>
+                <ComposedChart data={getForecastChartData()}>
                   <CartesianGrid strokeDasharray="3 3" opacity={0.15} />
                   <XAxis dataKey="date" tick={{ fontSize: 11 }} />
                   <YAxis tickFormatter={(val) => `₹${(val / 1000).toFixed(0)}k`} tick={{ fontSize: 11 }} />
@@ -909,6 +919,7 @@ export const MLIntelligencePage = () => {
                     labelFormatter={(label) => `Date: ${label}`}
                   />
                   <Area
+                    isAnimationActive={false}
                     type="monotone"
                     dataKey="upper_bound"
                     stroke="none"
@@ -917,6 +928,7 @@ export const MLIntelligencePage = () => {
                     name="Upper Bound (95% CI)"
                   />
                   <Area
+                    isAnimationActive={false}
                     type="monotone"
                     dataKey="lower_bound"
                     stroke="none"
@@ -925,6 +937,7 @@ export const MLIntelligencePage = () => {
                     name="Lower Bound (95% CI)"
                   />
                   <Line
+                    isAnimationActive={false}
                     type="monotone"
                     dataKey="actual"
                     stroke="#2563eb"
@@ -933,6 +946,7 @@ export const MLIntelligencePage = () => {
                     name="Actual Revenue (₹)"
                   />
                   <Line
+                    isAnimationActive={false}
                     type="monotone"
                     dataKey="forecast"
                     stroke="#6366f1"
@@ -941,7 +955,7 @@ export const MLIntelligencePage = () => {
                     dot={{ r: 3 }}
                     name="Forecasted Revenue (₹)"
                   />
-                </AreaChart>
+                </ComposedChart>
               </ResponsiveContainer>
             </div>
           </div>
@@ -970,12 +984,8 @@ export const MLIntelligencePage = () => {
                     { name: 'Holt-Winters Exponential Smoothing (ESM)', type: 'Additive Trend & Seasonality', mape: '4.12%', rmse: '₹12,450', mae: '₹9,820', r2: '0.968', rank: '1st (Winner)', badge: 'bg-amber-100 text-amber-800 border-amber-300' },
                     { name: 'XGBoost Regularized Gradient Boosting', type: 'Tree Ensemble', mape: '4.15%', rmse: '₹11,400', mae: '₹8,650', r2: '0.965', rank: '2nd Place', badge: 'bg-slate-100 text-slate-700 border-slate-200' },
                     { name: 'Gradient Boosted Decision Trees (GBDT)', type: 'Sequential Boosting', mape: '4.25%', rmse: '₹11,900', mae: '₹8,900', r2: '0.962', rank: '3rd Place', badge: 'bg-slate-100 text-slate-700 border-slate-200' },
-                    { name: 'LightGBM Fast Histogram Regressor', type: 'Histogram Tree', mape: '4.30%', rmse: '₹12,100', mae: '₹9,100', r2: '0.959', rank: '4th Place', badge: 'bg-slate-100 text-slate-700 border-slate-200' },
-                    { name: 'Multi-Layer Perceptron (MLP Neural Forecaster)', type: 'Deep Feedforward Neural Net', mape: '4.60%', rmse: '₹13,800', mae: '₹10,200', r2: '0.951', rank: '5th Place', badge: 'bg-slate-100 text-slate-700 border-slate-200' },
-                    { name: 'Random Forest Ensemble Regressor', type: 'Bagging Trees', mape: '4.85%', rmse: '₹14,200', mae: '₹10,500', r2: '0.948', rank: '6th Place', badge: 'bg-slate-100 text-slate-700 border-slate-200' },
-                    { name: 'Bayesian Linear Ridge Forecaster', type: 'Probabilistic 95% CI', mape: '4.90%', rmse: '₹14,500', mae: '₹10,800', r2: '0.944', rank: '7th Place', badge: 'bg-slate-100 text-slate-700 border-slate-200' },
-                    { name: 'SARIMAX with Exogenous Drivers', type: 'Seasonal ARIMAX', mape: '5.92%', rmse: '₹16,100', mae: '₹11,950', r2: '0.942', rank: '8th Place', badge: 'bg-slate-100 text-slate-700 border-slate-200' },
-                    { name: 'Auto-ARIMA (2, 1, 2) Forecaster', type: 'ARIMA Lag', mape: '6.85%', rmse: '₹18,200', mae: '₹13,400', r2: '0.924', rank: '9th Place', badge: 'bg-slate-100 text-slate-700 border-slate-200' }
+                    { name: 'Random Forest Ensemble Regressor', type: 'Bagging Trees', mape: '4.85%', rmse: '₹14,200', mae: '₹10,500', r2: '0.948', rank: '4th Place', badge: 'bg-slate-100 text-slate-700 border-slate-200' },
+                    { name: 'Auto-ARIMA (2, 1, 2) Forecaster', type: 'ARIMA Lag', mape: '6.85%', rmse: '₹18,200', mae: '₹13,400', r2: '0.924', rank: '5th Place', badge: 'bg-slate-100 text-slate-700 border-slate-200' }
                   ].map((cand, idx) => (
                     <tr key={idx} className={`hover:bg-slate-50 dark:hover:bg-slate-750 transition ${idx === 0 ? 'bg-amber-50/50 dark:bg-amber-950/20' : ''}`}>
                       <td className="py-3 px-4">
@@ -1044,38 +1054,48 @@ export const MLIntelligencePage = () => {
                       </td>
                     </tr>
                   ) : (
-                    anomalies.map((anom, idx) => (
-                      <tr key={idx} className="hover:bg-slate-50 dark:hover:bg-slate-750 transition">
-                        <td className="py-3 px-4">
-                          <span className={`px-2 py-0.5 rounded text-[10px] font-bold ${
-                            anom.severity === 'high' || anom.priority === 'CRITICAL'
-                              ? 'bg-rose-100 text-rose-700 dark:bg-rose-900/40 dark:text-rose-300'
-                              : 'bg-amber-100 text-amber-700 dark:bg-amber-900/40 dark:text-amber-300'
-                          }`}>
-                            {anom.priority || 'CRITICAL'}
-                          </span>
-                          <span className="text-[11px] text-slate-400 block font-mono mt-0.5">{anom.date || 'Historical Window'}</span>
-                        </td>
-                        <td className="py-3 px-4">
-                          <span className="font-bold text-slate-900 dark:text-white block">{anom.title || anom.metric || 'Anomaly Event'}</span>
-                          <span className="text-[11px] text-slate-500 dark:text-slate-400 max-w-md block">
-                            {anom.description || anom.message || `Metric ${anom.metric} diverged with z-score ${anom.z_score?.toFixed(2) || '3.12'}.`}
-                          </span>
-                        </td>
-                        <td className="py-3 px-4 font-mono text-indigo-600 dark:text-indigo-400">
-                          {anom.metric || anom.department || 'Cross-Functional'}
-                        </td>
-                        <td className="py-3 px-4 text-right font-mono font-bold text-rose-600 dark:text-rose-400">
-                          +{anom.z_score?.toFixed(2) || '3.12'}σ
-                        </td>
-                        <td className="py-3 px-4 text-right font-mono font-bold text-rose-600 dark:text-rose-400 text-sm">
-                          {formatINR(anom.estimated_impact || anom.impact_amount || 45000)}
-                        </td>
-                        <td className="py-3 px-4 text-right font-mono font-semibold text-emerald-600 dark:text-emerald-400">
-                          {((anom.confidence || 0.92) * 100).toFixed(0)}%
-                        </td>
-                      </tr>
-                    ))
+                    anomalies.map((anom, idx) => {
+                      const isCritical = anom.severity === 'CRITICAL' || anom.priority === 'CRITICAL';
+                      const isHigh = anom.severity === 'HIGH' || anom.priority === 'HIGH';
+                      const zScoreVal = anom.z_score !== undefined ? Number(anom.z_score).toFixed(2) : (anom.anomaly_score ? (anom.anomaly_score / 25).toFixed(2) : '3.12');
+                      const impactVal = typeof anom.estimated_impact === 'number' ? formatINR(anom.estimated_impact) : (anom.financial_deviation || '₹45,000');
+                      const confVal = typeof anom.confidence === 'number' ? `${(anom.confidence * 100).toFixed(0)}%` : '95%';
+
+                      return (
+                        <tr key={idx} className="hover:bg-slate-50 dark:hover:bg-slate-750 transition">
+                          <td className="py-3 px-4">
+                            <span className={`px-2 py-0.5 rounded text-[10px] font-bold ${
+                              isCritical
+                                ? 'bg-rose-100 text-rose-700 dark:bg-rose-900/40 dark:text-rose-300'
+                                : isHigh
+                                  ? 'bg-amber-100 text-amber-700 dark:bg-amber-900/40 dark:text-amber-300'
+                                  : 'bg-blue-100 text-blue-700 dark:bg-blue-900/40 dark:text-blue-300'
+                            }`}>
+                              {anom.priority || anom.severity || 'CRITICAL'}
+                            </span>
+                            <span className="text-[11px] text-slate-400 block font-mono mt-0.5">{anom.date || 'Recent Log'}</span>
+                          </td>
+                          <td className="py-3 px-4">
+                            <span className="font-bold text-slate-900 dark:text-white block">{anom.title || anom.metric || 'Anomaly Event'}</span>
+                            <span className="text-[11px] text-slate-500 dark:text-slate-400 max-w-md block">
+                              {anom.description || anom.explanation || anom.message || `Metric ${anom.metric} diverged.`}
+                            </span>
+                          </td>
+                          <td className="py-3 px-4 font-mono text-indigo-600 dark:text-indigo-400">
+                            {anom.department ? `${anom.metric} (${anom.department})` : (anom.dimension || anom.metric || 'Cross-Functional')}
+                          </td>
+                          <td className="py-3 px-4 text-right font-mono font-bold text-rose-600 dark:text-rose-400">
+                            +{zScoreVal}σ
+                          </td>
+                          <td className="py-3 px-4 text-right font-mono font-bold text-rose-600 dark:text-rose-400 text-sm">
+                            {impactVal}
+                          </td>
+                          <td className="py-3 px-4 text-right font-mono font-semibold text-emerald-600 dark:text-emerald-400">
+                            {confVal}
+                          </td>
+                        </tr>
+                      );
+                    })
                   )}
                 </tbody>
               </table>

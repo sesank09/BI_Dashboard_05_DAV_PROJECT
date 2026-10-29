@@ -23,4 +23,8 @@ def get_forecast(months: int = 6, db: Session = Depends(get_db)):
 @router.get("/anomalies")
 def get_anomalies(db: Session = Depends(get_db)):
     engine = AnalyticsEngine(db)
-    return engine.detect_anomalies()
+    anomalies = engine.detect_anomalies()
+    return {
+        "total_anomalies": len(anomalies),
+        "anomalies": anomalies
+    }

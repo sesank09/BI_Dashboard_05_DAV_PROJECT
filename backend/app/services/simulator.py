@@ -84,25 +84,13 @@ class DecisionSimulator:
 
         latency_ms = (time.time() - t0) * 1000.0
 
-        # Register in Model Registry
-        self.registry.register_model(
-            model_id="SIM-DECISION-REG",
-            model_name="Empirical Decision Simulator Elasticity Model",
-            model_type="Multi-Variable Scenario Simulation",
-            dataset="cross_functional_warehouse",
-            features=["marketing_spend_delta", "headcount_delta", "opex_reduction", "discount_delta"],
-            target="projected_revenue_and_profit",
-            train_rows=len(sales_df),
-            test_rows=0,
-            parameters={
-                "marketing_elasticity": round(mkt_elasticity, 2),
-                "headcount_elasticity": round(hc_elasticity, 2),
-                "price_elasticity": round(price_elasticity, 2)
-            },
-            metrics={"simulation_latency_ms": round(latency_ms, 2)},
-            execution_time_ms=latency_ms,
-            description="Empirical regression model projecting multi-departmental financial outcomes for strategic parameter tuning."
-        )
+        # Update simulation context in Model Registry for MOD-RF-03
+        rf_model = self.registry.get_model("MOD-RF-03")
+        if rf_model:
+            rf_model["simulation_latency_ms"] = round(latency_ms, 2)
+            rf_model["parameters"]["marketing_elasticity"] = round(mkt_elasticity, 2)
+            rf_model["parameters"]["headcount_elasticity"] = round(hc_elasticity, 2)
+            rf_model["parameters"]["price_elasticity"] = round(price_elasticity, 2)
 
         simulated_kpis = {
             "revenue": round(sim_revenue, 2),

@@ -120,7 +120,7 @@ export const CustomerSegmentationPage = () => {
                     {seg.customer_count} <span className="text-xs font-normal text-slate-500">Customers</span>
                   </div>
                   <p className="text-xs text-slate-500 mt-0.5">
-                    {((seg.customer_count / (data.total_customers || 1000)) * 100).toFixed(1)}% of customer base
+                    {((seg.customer_count / (data.total_customers || data.total_customers_analyzed || 1000)) * 100).toFixed(1)}% of customer base
                   </p>
                 </div>
                 <div className="text-xs space-y-1.5 text-slate-600 dark:text-slate-300 border-t border-slate-100 dark:border-slate-700 pt-3 font-mono">
@@ -153,7 +153,7 @@ export const CustomerSegmentationPage = () => {
                     <XAxis dataKey="k" label={{ value: 'Number of Clusters (K)', position: 'insideBottom', offset: -5, fontSize: 11 }} />
                     <YAxis domain={[0.3, 0.6]} tick={{ fontSize: 11 }} />
                     <Tooltip formatter={(val) => Number(val).toFixed(4)} />
-                    <Line type="monotone" dataKey="score" stroke="#2563eb" strokeWidth={3} dot={{ r: 5, fill: '#2563eb' }} name="Silhouette Score" />
+                    <Line isAnimationActive={false} type="monotone" dataKey="score" stroke="#2563eb" strokeWidth={3} dot={{ r: 5, fill: '#2563eb' }} name="Silhouette Score" />
                   </LineChart>
                 </ResponsiveContainer>
               </div>
@@ -172,7 +172,7 @@ export const CustomerSegmentationPage = () => {
                     <XAxis dataKey="segment_name" tick={{ fontSize: 11 }} />
                     <YAxis tick={{ fontSize: 11 }} tickFormatter={(v) => `₹${(v / 100000).toFixed(0)}L`} />
                     <Tooltip formatter={(val) => formatINR(val)} />
-                    <Bar dataKey="total_revenue" name="Total Revenue (₹)" fill="#123A6D" radius={[4, 4, 0, 0]} />
+                    <Bar isAnimationActive={false} dataKey="total_revenue" name="Total Revenue (₹)" fill="#123A6D" radius={[4, 4, 0, 0]} />
                   </BarChart>
                 </ResponsiveContainer>
               </div>
